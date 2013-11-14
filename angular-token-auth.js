@@ -1,6 +1,6 @@
 'use strict';
 
-var auth = angular.module('ngTokenAuth', ['ng', 'ngCookies', 'settings']);
+var auth = angular.module('ngTokenAuth', ['ngCookies', 'settings']);
 
 // Default settings. You can override these in your settings module.
 auth.constant('TOKEN_AUTH', {
@@ -30,7 +30,7 @@ auth.run(['$rootScope', '$location', '$user', 'TOKEN_AUTH', 'SETTINGS', function
 
     $rootScope.$on('$routeChangeStart', function (e, next, current) {
         if (next.$$route && !next.$$route.anonymous && !$user.authenticated) {
-            $location.url(MODULE_SETTINGS.LOGIN + '?next='+ next.$$route.originalPath);
+            $location.url(MODULE_SETTINGS.LOGIN + '?next=' + next.$$route.originalPath);
         }
     });
 }]);
@@ -51,20 +51,19 @@ auth.controller('LogoutCtrl', ['$scope', '$user', function ($scope, $user) {
     $user.logout();
 }]);
 
-auth.factory('$user', ['$rootScope', '$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'SETTINGS', function ($rootScope, $q, $http, $cookieStore, $location, TOKEN_AUTH, SETTINGS) {
+auth.factory('$user', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'SETTINGS', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, SETTINGS) {
     var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, SETTINGS.TOKEN_AUTH);
 
     var user = {
         authenticated: false,
         token: null,
-        // scope: $rootScope.$new(),
         login: function (email, password) {
-            var user = this;
             var deferred = $q.defer();
+
             $http.post(SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT, {
                 username: email,
                 password: password
-            }).success(function(data) {
+            }).success(function (data) {
                 user.authenticated = true;
                 user.token = data.token;
                 $cookieStore.put('auth', {
@@ -74,6 +73,7 @@ auth.factory('$user', ['$rootScope', '$q', '$http', '$cookieStore', '$location',
             }).error(function (data) {
                 deferred.reject(data);
             });
+
             return deferred.promise;
         },
         logout: function () {
