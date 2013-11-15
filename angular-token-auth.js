@@ -6,7 +6,8 @@ var auth = angular.module('ngTokenAuth', ['ngCookies', 'project_settings']);
 auth.constant('TOKEN_AUTH', {
     ENDPOINT: '/auth/',
     LOGIN: '/login/',
-    LOGOUT: '/logout/'
+    LOGOUT: '/logout/',
+    LOGIN_REDIRECT_URL: '/'
 });
 
 auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -35,14 +36,16 @@ auth.run(['$rootScope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 
     });
 }]);
 
-auth.controller('LoginCtrl', ['$scope', '$location', '$user', function ($scope, $location, $user) {
+auth.controller('LoginCtrl', ['$scope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($scope, $location, $user, TOKEN_AUTH, PROJECT_SETTINGS) {
+    var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+
     if($user.authenticated) {
-        $location.url('/');
+        $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
     }
 
     $scope.login = function () {
         $user.login($scope.email, $scope.password).then(function (data) {
-            $location.url($location.search().next || '/');
+            $location.url($location.search().next || MODULE_SETTINGS.LOGIN_REDIRECT_URL);
         });
     };
 }]);
