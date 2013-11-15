@@ -1,6 +1,6 @@
 'use strict';
 
-var auth = angular.module('ngTokenAuth', ['ngCookies', 'settings']);
+var auth = angular.module('ngTokenAuth', ['ngCookies', 'project_settings']);
 
 // Default settings. You can override these in your settings module.
 auth.constant('TOKEN_AUTH', {
@@ -9,8 +9,8 @@ auth.constant('TOKEN_AUTH', {
     LOGOUT: '/logout/'
 });
 
-auth.config(['$routeProvider', 'TOKEN_AUTH', 'SETTINGS', function ($routeProvider, TOKEN_AUTH, SETTINGS) {
-    var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, SETTINGS.TOKEN_AUTH);
+auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
+    var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
     $routeProvider
         .when(MODULE_SETTINGS.LOGIN, {
@@ -25,8 +25,8 @@ auth.config(['$routeProvider', 'TOKEN_AUTH', 'SETTINGS', function ($routeProvide
         });
 }]);
 
-auth.run(['$rootScope', '$location', '$user', 'TOKEN_AUTH', 'SETTINGS', function ($rootScope, $location, $user, TOKEN_AUTH, SETTINGS) {
-    var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, SETTINGS.TOKEN_AUTH);
+auth.run(['$rootScope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $location, $user, TOKEN_AUTH, PROJECT_SETTINGS) {
+    var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
     $rootScope.$on('$routeChangeStart', function (e, next, current) {
         if (next.$$route && !next.$$route.anonymous && !$user.authenticated) {
@@ -51,8 +51,8 @@ auth.controller('LogoutCtrl', ['$scope', '$user', function ($scope, $user) {
     $user.logout();
 }]);
 
-auth.factory('$user', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'SETTINGS', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, SETTINGS) {
-    var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, SETTINGS.TOKEN_AUTH);
+auth.factory('$user', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS) {
+    var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
     var user = {
         authenticated: false,
@@ -60,7 +60,7 @@ auth.factory('$user', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH',
         login: function (email, password) {
             var deferred = $q.defer();
 
-            $http.post(SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT, {
+            $http.post(PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT, {
                 username: email,
                 password: password
             }).success(function (data) {
