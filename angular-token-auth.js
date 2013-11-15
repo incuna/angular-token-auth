@@ -47,7 +47,7 @@ auth.controller('LoginCtrl', ['$scope', '$location', '$user', function ($scope, 
     };
 }]);
 
-auth.controller('LogoutCtrl', ['$scope', '$user', function ($scope, $user) {
+auth.controller('LogoutCtrl', ['$user', function ($user) {
     $user.logout();
 }]);
 
