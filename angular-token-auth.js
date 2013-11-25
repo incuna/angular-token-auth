@@ -31,7 +31,9 @@ auth.run(['$rootScope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 
 
     $rootScope.$on('$routeChangeStart', function (e, next, current) {
         if (next.$$route && !next.$$route.anonymous && !$user.authenticated) {
-            $location.url(MODULE_SETTINGS.LOGIN + '?next=' + next.$$route.originalPath);
+            var nextParam = next.$$route.originalPath;
+
+            $location.url(MODULE_SETTINGS.LOGIN + '?next=' + nextParam);
         }
     });
 }]);
