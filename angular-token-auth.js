@@ -30,12 +30,13 @@ auth.run(['$rootScope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 
     var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
     $rootScope.$on('$routeChangeStart', function (e, next, current) {
+      
         if (next.$$route && !next.$$route.anonymous && !$user.authenticated) {
-            var nextParam = next.$$route.originalPath;
-
-            $location.url(MODULE_SETTINGS.LOGIN + '?next=' + nextParam);
+            $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
+            $location.replace();
         }
     });
+    
 }]);
 
 auth.controller('LoginCtrl', ['$scope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($scope, $location, $user, TOKEN_AUTH, PROJECT_SETTINGS) {
