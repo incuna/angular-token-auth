@@ -15,12 +15,12 @@ auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rout
 
     $routeProvider
         .when(MODULE_SETTINGS.LOGIN, {
-            templateUrl: 'views/auth/login.html',
+            templateUrl: 'templates/auth/login.html',
             controller: 'LoginCtrl',
             anonymous: true
         })
         .when(MODULE_SETTINGS.LOGOUT, {
-            templateUrl: 'views/auth/logout.html',
+            templateUrl: 'templates/auth/logout.html',
             controller: 'LogoutCtrl',
             anonymous: true
         });
@@ -30,13 +30,13 @@ auth.run(['$rootScope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 
     var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
     $rootScope.$on('$routeChangeStart', function (e, next, current) {
-      
+
         if (next.$$route && !next.$$route.anonymous && !$user.authenticated) {
             $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
             $location.replace();
         }
     });
-    
+
 }]);
 
 auth.controller('LoginCtrl', ['$scope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($scope, $location, $user, TOKEN_AUTH, PROJECT_SETTINGS) {
