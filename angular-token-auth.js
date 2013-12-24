@@ -99,7 +99,7 @@
                 $cookieStore.remove('auth');
                 user.token = null;
                 user.authenticated = false;
-                $location.url(MODULE_SETTINGS.LOGIN);
+                $location.url(MODULE_SETTINGS.LOGOUT);
             }
         };
 
