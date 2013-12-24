@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     var auth = angular.module('ngTokenAuth', ['ngCookies', 'project_settings']);
@@ -17,7 +17,6 @@
         $routeProvider
             .when(MODULE_SETTINGS.LOGIN, {
                 templateUrl: 'templates/auth/login.html',
-                controller: 'LoginCtrl',
                 anonymous: true
             })
             .when(MODULE_SETTINGS.LOGOUT, {
@@ -31,7 +30,6 @@
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         $rootScope.$on('$routeChangeStart', function (e, next, current) {
-
             if (next.$$route && !next.$$route.anonymous && !$user.authenticated) {
                 $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
                 $location.replace();
@@ -40,17 +38,31 @@
 
     }]);
 
-    auth.controller('LoginCtrl', ['$scope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($scope, $location, $user, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.directive('loginForm', ['$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, $user, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         if($user.authenticated) {
             $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
         }
 
-        $scope.login = function () {
-            $user.login($scope.email, $scope.password).then(function (data) {
-                $location.url($location.search().next || MODULE_SETTINGS.LOGIN_REDIRECT_URL);
-            });
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                scope.status = {};
+
+                scope.login = function () {
+                    scope.errors = '';
+                    scope.status.authenticating = true;
+
+                    $user.login(scope.email, scope.password).then(function (response) {
+                        $location.path($location.search().next || MODULE_SETTINGS.LOGIN_REDIRECT_URL);
+                    }, function (response, status) {
+                        scope.errors = response;
+                    })['finally'](function () {
+                        scope.status.authenticating = false;
+                    });
+                };
+            }
         };
     }]);
 
