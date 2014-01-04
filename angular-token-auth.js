@@ -17,6 +17,7 @@
         $routeProvider
             .when(MODULE_SETTINGS.LOGIN, {
                 templateUrl: 'templates/auth/login.html',
+                controller: 'LoginCtrl',
                 anonymous: true
             })
             .when(MODULE_SETTINGS.LOGOUT, {
@@ -82,6 +83,8 @@
             }
         };
     }]);
+
+    auth.controller('LoginCtrl', [function () {}]);
 
     auth.controller('LogoutCtrl', ['$user', function ($user) {
         $user.logout();
