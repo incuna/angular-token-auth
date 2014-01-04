@@ -50,15 +50,32 @@
             restrict: 'A',
             link: function (scope, element, attrs) {
                 scope.status = {};
+                scope.fields = {
+                    username: {
+                        required: true
+                    },
+                    password: {
+                        required: true
+                    }
+                };
 
                 scope.login = function () {
-                    scope.errors = '';
+                    scope.fields.errors = '';
+                    scope.fields.username.errors = '';
+                    scope.fields.password.errors = '';
+
                     scope.status.authenticating = true;
 
-                    $user.login(scope.email, scope.password).then(function (response) {
+                    $user.login(scope.fields.username.value, scope.fields.password.value).then(function (response) {
                         $location.path($location.search().next || MODULE_SETTINGS.LOGIN_REDIRECT_URL);
                     }, function (response, status) {
-                        scope.errors = response;
+                        if (response.non_field_errors) {
+                            scope.fields.errors = [{
+                                msg: response.non_field_errors[0]
+                            }];
+                        }
+                        scope.fields.username.errors = response.username ? response.username[0] : '';
+                        scope.fields.password.errors = response.password ? response.password[0] : '';
                     })['finally'](function () {
                         scope.status.authenticating = false;
                     });
@@ -83,11 +100,11 @@
         var user = {
             authenticated: false,
             token: null,
-            login: function (email, password) {
+            login: function (username, password) {
                 var deferred = $q.defer();
 
                 $http.post(PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT, {
-                    username: email,
+                    username: username,
                     password: password
                 }).success(function (data) {
                     user.authenticated = true;
