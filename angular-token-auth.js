@@ -17,7 +17,6 @@
         $routeProvider
             .when(MODULE_SETTINGS.LOGIN, {
                 templateUrl: 'templates/auth/login.html',
-                controller: 'LoginCtrl',
                 anonymous: true
             })
             .when(MODULE_SETTINGS.LOGOUT, {
@@ -84,13 +83,7 @@
         };
     }]);
 
-    auth.controller('LoginCtrl', ['$scope', function ($scope) {
-        $scope.app.page.title = 'Log in';
-    }]);
-
-    auth.controller('LogoutCtrl', ['$scope', '$user', function ($scope, $user) {
-        $scope.app.page.title = 'Log out';
-
+    auth.controller('LogoutCtrl', ['$user', function ($user) {
         $user.logout();
     }]);
 
