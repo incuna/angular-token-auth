@@ -27,11 +27,11 @@
             });
     }]);
 
-    auth.run(['$rootScope', '$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $location, $user, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.run(['$rootScope', '$location', 'tokenAuth', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $location, tokenAuth, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         $rootScope.$on('$routeChangeStart', function (e, next, current) {
-            if (next.$$route && !next.$$route.anonymous && !$user.authenticated) {
+            if (next.$$route && !next.$$route.anonymous && !tokenAuth.authenticated) {
                 $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
                 $location.replace();
             }
@@ -39,10 +39,10 @@
 
     }]);
 
-    auth.directive('loginForm', ['$location', '$user', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, $user, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.directive('loginForm', ['$location', 'tokenAuth', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, tokenAuth, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
-        if($user.authenticated) {
+        if(tokenAuth.authenticated) {
             $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
         }
 
@@ -66,7 +66,7 @@
 
                     scope.status.authenticating = true;
 
-                    $user.login(scope.fields.username.value, scope.fields.password.value).then(function (response) {
+                    tokenAuth.login(scope.fields.username.value, scope.fields.password.value).then(function (response) {
                         $location.path($location.search().next || MODULE_SETTINGS.LOGIN_REDIRECT_URL);
                     }, function (response, status) {
                         if (response.non_field_errors) {
@@ -86,14 +86,14 @@
 
     auth.controller('LoginCtrl', [function () {}]);
 
-    auth.controller('LogoutCtrl', ['$user', function ($user) {
-        $user.logout();
+    auth.controller('LogoutCtrl', ['tokenAuth', function (tokenAuth) {
+        tokenAuth.logout();
     }]);
 
-    auth.factory('$user', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.factory('tokenAuth', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
-        var user = {
+        var tokenAuth = {
             authenticated: false,
             token: null,
             login: function (username, password) {
@@ -103,12 +103,12 @@
                     username: username,
                     password: password
                 }).success(function (data) {
-                    user.authenticated = true;
-                    user.token = data.token;
+                    tokenAuth.authenticated = true;
+                    tokenAuth.token = data.token;
                     $cookieStore.put('auth', {
                         token: data.token
                     });
-                    deferred.resolve(user);
+                    deferred.resolve(tokenAuth);
                 }).error(function (data) {
                     deferred.reject(data);
                 });
@@ -117,18 +117,18 @@
             },
             logout: function () {
                 $cookieStore.remove('auth');
-                user.token = null;
-                user.authenticated = false;
+                tokenAuth.token = null;
+                tokenAuth.authenticated = false;
                 $location.url(MODULE_SETTINGS.LOGOUT);
             }
         };
 
         var cookie = $cookieStore.get('auth');
         if (cookie && cookie.token) {
-            user.authenticated = true;
-            user.token = cookie.token;
+            tokenAuth.authenticated = true;
+            tokenAuth.token = cookie.token;
         }
 
-        return user;
+        return tokenAuth;
     }]);
 }());
