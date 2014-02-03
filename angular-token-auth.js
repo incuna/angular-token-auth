@@ -48,6 +48,7 @@
 
         return {
             restrict: 'A',
+            templateUrl: 'templates/auth/login_form.html',
             link: function (scope, element, attrs) {
                 scope.status = {};
                 scope.fields = {
