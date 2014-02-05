@@ -1,10 +1,10 @@
 {
   "name": "angular-token-auth",
-  "version": "1.1.1",
-  "main": "./angular-token-auth.js",
+  "version": "1.2.0",
+  "main": "./angular_token_auth.js",
   "dependencies": {
-    "angular": "~1.2.0",
-    "angular-cookies": "~1.2.0"
+    "angular": "~1.2",
+    "angular-cookies": "~1.2"
   },
   "homepage": "https://github.com/incuna/angular-token-auth",
   "authors": [

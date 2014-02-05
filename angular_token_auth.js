@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var auth = angular.module('ngTokenAuth', ['ngCookies', 'project_settings']);
+    var auth = angular.module('angular-token-auth', ['ngCookies', 'project_settings']);
 
     // Default settings. You can override these in your settings module.
     auth.constant('TOKEN_AUTH', {
