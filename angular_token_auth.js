@@ -17,13 +17,11 @@
         $routeProvider
             .when(MODULE_SETTINGS.LOGIN, {
                 templateUrl: 'templates/auth/login.html',
-                controller: 'LoginCtrl',
-                anonymous: true
+                controller: 'LoginCtrl'
             })
             .when(MODULE_SETTINGS.LOGOUT, {
                 templateUrl: 'templates/auth/logout.html',
-                controller: 'LogoutCtrl',
-                anonymous: true
+                controller: 'LogoutCtrl'
             });
     }]);
 
@@ -31,7 +29,14 @@
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         $rootScope.$on('$routeChangeStart', function (e, next, current) {
-            if (next.$$route && !next.$$route.anonymous && !tokenAuth.authenticated) {
+            var nextRoute = next.$$route;
+            // By default, all routes should be anonymous.
+            var nextRouteAnonymous = true;
+            if (nextRoute.anonymous === false) {
+                nextRouteAnonymous = false;
+            }
+
+            if (nextRoute && !nextRouteAnonymous && !tokenAuth.authenticated) {
                 $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
                 $location.replace();
             }

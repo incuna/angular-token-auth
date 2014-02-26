@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 2.0.0
+
+* All routes are now anonymous by default. This seems like the best default
+  going forwards.
+
 # 1.2.0
 
 * Updated naming conventions to be consistent with other angular projects.
