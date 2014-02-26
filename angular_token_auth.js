@@ -36,7 +36,7 @@
                 nextRouteAnonymous = false;
             }
 
-            if (nextRoute && !nextRouteAnonymous && !tokenAuth.authenticated) {
+            if (!nextRouteAnonymous && !tokenAuth.authenticated) {
                 $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
                 $location.replace();
             }
