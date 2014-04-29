@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# 3.0.0
+
+* The `tokenAuth` factory has been removed and replaced with
+  `authenticationFactory` which now has only 2 methods, `login` and `logout`.
+* `tokenFactory` has been added with 3 methods to get, set and clear tokens.
+* HTTP inteceptor has been added to the package to set appropriate headers on
+  all HTTP requests.
+* No more boilerplate required in your app to use angular-token-auth.
+
 # 2.0.0
 
 * All routes are now anonymous by default. This seems like the best default
