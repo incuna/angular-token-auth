@@ -135,14 +135,14 @@
                 return null;
             },
             setToken: function (token) {
-                $rootScope.$broadcast('tokenAuth:set');
                 $cookieStore.put('auth', {
                     token: token
                 });
+                $rootScope.$broadcast('tokenAuth:set');
             },
             clearToken: function () {
-                $rootScope.$broadcast('tokenAuth:clear');
                 $cookieStore.remove('auth');
+                $rootScope.$broadcast('tokenAuth:clear');
             }
         };
     }]);

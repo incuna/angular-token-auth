@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 3.0.2
+
+* Only broadcast tokenAuth events after cookie manipulation.
+
 # 3.0.1
 
 * Removed redirect of URLs containing `next` parameter in the `run` method. As
