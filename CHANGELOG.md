@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 3.0.1
+
+* Removed redirect of URLs containing `next` parameter in the `run` method. As
+  it caused an infinite loop in some situations.
+
 # 3.0.0
 
 * The `tokenAuth` factory has been removed and replaced with

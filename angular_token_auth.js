@@ -65,9 +65,6 @@
             if (!nextRouteIsAnonymous && !tokenFactory.getToken()) {
                 $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
                 $location.replace();
-            } else if (angular.isDefined($location.search().next)) {
-                // If the location contains a `next` parameter, redirect to it.
-                $location.url($location.search().next);
             }
         });
 
@@ -77,7 +74,7 @@
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         // If we are already logged in.
-        if(tokenFactory.getToken()) {
+        if (tokenFactory.getToken()) {
             $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
         }
 
