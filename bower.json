@@ -9,8 +9,8 @@
   "homepage": "https://github.com/incuna/angular-token-auth",
   "authors": [
     "Perry Roper <perryroper@gmail.com>",
-    "Anna Powell-Smith <anna@darkgreener.com>"
-    "Graham Gilchrist <opensource@grahamgilchrist.com>",
+    "Anna Powell-Smith <anna@darkgreener.com>",
+    "Graham Gilchrist <opensource@grahamgilchrist.com>"
   ],
   "license": "MIT",
   "ignore": [
