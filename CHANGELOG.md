@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 3.0.3
+
+* Add option for authirsation header prefix to allow oAuth 2.0 bearer authorisation
+
 # 3.0.2
 
 * Only broadcast tokenAuth events after cookie manipulation.
