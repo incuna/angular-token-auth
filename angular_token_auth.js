@@ -8,7 +8,8 @@
         ENDPOINT: '/auth/',
         LOGIN: '/login/',
         LOGOUT: '/logout/',
-        LOGIN_REDIRECT_URL: '/'
+        LOGIN_REDIRECT_URL: '/',
+        AUTH_HEADER_PREFIX: 'Token'
     });
 
     auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -25,13 +26,15 @@
             });
     }]);
 
-    auth.factory('authInterceptor', ['$rootScope', '$q', 'tokenFactory', function ($rootScope, $q, tokenFactory) {
+    auth.factory('authInterceptor', ['$rootScope', '$q', 'tokenFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $q, tokenFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
+        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+
         return {
             request: function (config) {
                 config.headers = config.headers || {};
                 var token = tokenFactory.getToken();
                 if (token) {
-                    config.headers.Authorization = 'Token ' + token;
+                    config.headers.Authorization = MODULE_SETTINGS.AUTH_HEADER_PREFIX + ' ' + token;
                 }
                 return config;
             },
