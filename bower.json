@@ -1,6 +1,6 @@
 {
   "name": "angular-token-auth",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "main": "./angular_token_auth.js",
   "dependencies": {
     "angular": "~1.2",
@@ -10,6 +10,7 @@
   "authors": [
     "Perry Roper <perryroper@gmail.com>",
     "Anna Powell-Smith <anna@darkgreener.com>"
+    "Graham Gilchrist <opensource@grahamgilchrist.com>",
   ],
   "license": "MIT",
   "ignore": [
