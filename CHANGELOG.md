@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 4.0.0
+
+* Only transform request headers for hosts defined in the ALLOWED_HOSTS
+  config list.
+
 # 3.0.3
 
 * Add option for authorisation header prefix to allow oAuth 2.0 bearer authorisation
