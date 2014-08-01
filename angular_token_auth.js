@@ -9,7 +9,8 @@
         LOGIN: '/login/',
         LOGOUT: '/logout/',
         LOGIN_REDIRECT_URL: '/',
-        AUTH_HEADER_PREFIX: 'Token'
+        AUTH_HEADER_PREFIX: 'Token',
+        ALLOWED_HOSTS: []
     });
 
     auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -31,11 +32,19 @@
 
         return {
             request: function (config) {
-                config.headers = config.headers || {};
-                var token = tokenFactory.getToken();
-                if (token) {
-                    config.headers.Authorization = MODULE_SETTINGS.AUTH_HEADER_PREFIX + ' ' + token;
+                // Only transform requests for hosts in the ALLOWED_HOSTS setting.
+                var allowedHosts = MODULE_SETTINGS.ALLOWED_HOSTS;
+                var urlElement = document.createElement('a');
+                urlElement.href = config.url;
+
+                if (allowedHosts.indexOf(urlElement.host) > -1 || allowedHosts.indexOf(urlElement.hostname) > -1) {
+                    config.headers = config.headers || {};
+                    var token = tokenFactory.getToken();
+                    if (token) {
+                        config.headers.Authorization = MODULE_SETTINGS.AUTH_HEADER_PREFIX + ' ' + token;
+                    }
                 }
+
                 return config;
             },
             responseError: function (response) {
