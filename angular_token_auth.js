@@ -141,7 +141,7 @@
         //return true if browser has cookie support
         var cookieCheck = function () {
             $cookieStore.put('test', 'test');
-            var test = $cookieStore.getr('test');
+            var test = $cookieStore.get('test');
             if (!angular.isDefined(test)) {
                 return false;
             }
