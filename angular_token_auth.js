@@ -137,10 +137,15 @@
         authenticationFactory.logout();
     }]);
 
-    auth.factory('tokenFactory', ['$rootScope', '$cookieStore', function ($rootScope, $cookieStore) {
+    auth.factory('tokenFactory', ['$rootScope', '$cookieStore', '$window', function ($rootScope, $cookieStore, $window) {
         return {
             getToken: function () {
                 var auth = $cookieStore.get('auth');
+                if (!auth && $window.localStorage) {
+                    auth = {
+                        token: $window.localStorage.getItem('auth')
+                    };
+                }
                 if (angular.isDefined(auth)) {
                     return auth.token;
                 }
@@ -150,10 +155,16 @@
                 $cookieStore.put('auth', {
                     token: token
                 });
+                if ($window.localStorage) {
+                    $window.localStorage.setItem('auth', token);
+                }
                 $rootScope.$broadcast('tokenAuth:set');
             },
             clearToken: function () {
                 $cookieStore.remove('auth');
+                if ($window.localStorage) {
+                    $window.localStorage.removeItem('auth');
+                }
                 $rootScope.$broadcast('tokenAuth:clear');
             }
         };
