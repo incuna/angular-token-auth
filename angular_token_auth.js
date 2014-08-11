@@ -142,10 +142,7 @@
         var cookieCheck = function () {
             $cookieStore.put('test', 'test');
             var test = $cookieStore.get('test');
-            if (angular.isDefined(test)) {
-                return true;
-            }
-            return false;
+            return angular.isDefined(test);
         };
 
         // Determine how we should save the token
