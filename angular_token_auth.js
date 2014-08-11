@@ -137,34 +137,72 @@
         authenticationFactory.logout();
     }]);
 
-    auth.factory('tokenFactory', ['$rootScope', '$cookieStore', '$window', function ($rootScope, $cookieStore, $window) {
+   auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
+        //return true if browser has cookie support
+        var cookieCheck = function () {
+            $cookieStore.put('test', 'test');
+            var test = $cookieStore.getr('test');
+            if (!angular.isDefined(test)) {
+                return false;
+            }
+            return true;
+        };
+
+        // Determine how we should save the token
+        var storageType;
+        if (cookieCheck() === true) {
+            storageType = 'cookie';
+        } else if ($window.localStorage) {
+            storageType = 'localStorage';
+        }
+
+        return {
+            get: function (key) {
+                var value;
+                if (storageType === 'cookie') {
+                    value = $cookieStore.get(key);
+                } else if (storageType === 'localStorage') {
+                    value = angular.fromJson($window.localStorage.getItem(key));
+                }
+                if (angular.isDefined(value)) {
+                    return value;
+                }
+                return null;
+            },
+            set: function (key, value) {
+                if (storageType === 'cookie') {
+                    $cookieStore.put(key, value);
+                } else if (storageType === 'localStorage') {
+                    $window.localStorage.setItem(key, angular.toJson(value));
+                }
+            },
+            clear: function (key) {
+                if (storageType === 'cookie') {
+                    $cookieStore.remove(key);
+                } else if (storageType === 'localStorage') {
+                    $window.localStorage.removeItem(key);
+                }
+            }
+        };
+    }]);
+
+    auth.factory('tokenFactory', ['$rootScope', 'tokenStorageFactory', function ($rootScope, tokenStorageFactory) {
         return {
             getToken: function () {
-                var auth = $cookieStore.get('auth');
-                if (!angular.isDefined(auth) && $window.localStorage) {
-                    auth = {
-                        token: $window.localStorage.getItem('auth')
-                    };
-                }
+                var auth = tokenStorageFactory.get('auth');
                 if (angular.isDefined(auth)) {
                     return auth.token;
                 }
                 return null;
             },
             setToken: function (token) {
-                $cookieStore.put('auth', {
+                tokenStorageFactory.set('auth', {
                     token: token
                 });
-                if ($window.localStorage) {
-                    $window.localStorage.setItem('auth', token);
-                }
                 $rootScope.$broadcast('tokenAuth:set');
             },
             clearToken: function () {
-                $cookieStore.remove('auth');
-                if ($window.localStorage) {
-                    $window.localStorage.removeItem('auth');
-                }
+                tokenStorageFactory.clear('auth');
                 $rootScope.$broadcast('tokenAuth:clear');
             }
         };
