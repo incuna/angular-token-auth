@@ -141,7 +141,7 @@
         return {
             getToken: function () {
                 var auth = $cookieStore.get('auth');
-                if (!auth && $window.localStorage) {
+                if (!angular.isDefined(auth) && $window.localStorage) {
                     auth = {
                         token: $window.localStorage.getItem('auth')
                     };
