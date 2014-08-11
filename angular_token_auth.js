@@ -161,7 +161,7 @@
                 } else if (storageType === 'localStorage') {
                     value = angular.fromJson($window.localStorage.getItem(key));
                 }
-                return null;
+                return value;
             },
             set: function (key, value) {
                 if (storageType === 'cookie') {
