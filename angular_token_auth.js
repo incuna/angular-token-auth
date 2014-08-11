@@ -137,12 +137,12 @@
         authenticationFactory.logout();
     }]);
 
-   auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
+    auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
         //return true if browser has cookie support
         var cookieCheck = function () {
             $cookieStore.put('test', 'test');
             var test = $cookieStore.get('test');
-            return angular.isDefined(test);
+            return (angular.isDefined(test) && test === 'test');
         };
 
         // Determine how we should save the token
