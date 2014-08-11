@@ -155,14 +155,11 @@
 
         return {
             get: function (key) {
-                var value;
+                var value = null;
                 if (storageType === 'cookie') {
                     value = $cookieStore.get(key);
                 } else if (storageType === 'localStorage') {
                     value = angular.fromJson($window.localStorage.getItem(key));
-                }
-                if (angular.isDefined(value)) {
-                    return value;
                 }
                 return null;
             },
