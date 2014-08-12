@@ -140,6 +140,13 @@
     auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
 
         var storageMethods = {
+            noSupport: {
+                // No supported storage methods, but we have to return empty functions so the 
+                //  interface doesn't break
+                set: function () {},
+                get: function () {},
+                clear: function () {}
+            },
             cookie: {
                 test: function () {
                     // Return true if browser has cookie support. Using angular $cookieStore 
@@ -182,34 +189,15 @@
             }
         };
 
-        // Determine how we should save the token
-        var storageType;
         //use cookies if available, otherwise try localstorage
         if (storageMethods['cookie'].test() === true) {
-            storageType = 'cookie';
+            return storageMethods['cookie'];
         } else if (storageMethods['localStorage'].test()) {
-            storageType = 'localStorage';
+            return storageMethods['localStorage'];
+        } else {
+            return storageMethods['noSupport'];
         }
 
-        return {
-            get: function (key) {
-                var value;
-                if (storageType) {
-                    value = storageMethods[storageType].get(key);
-                }
-                return value;
-            },
-            set: function (key, value) {
-                if (storageType) {
-                    storageMethods[storageType].set(key, value);
-                }
-            },
-            clear: function (key) {
-                if (storageType) {
-                    storageMethods[storageType].clear(key);
-                }
-            }
-        };
     }]);
 
     auth.factory('tokenFactory', ['$rootScope', 'tokenStorageFactory', function ($rootScope, tokenStorageFactory) {
