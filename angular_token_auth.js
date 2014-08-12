@@ -212,12 +212,14 @@
             getToken: function () {
                 var auth = tokenStorageFactory.get('auth');
                 if (angular.isDefined(auth)) {
-                    return auth;
+                    return auth.token;
                 }
                 return null;
             },
             setToken: function (token) {
-                tokenStorageFactory.set('auth', token);
+                tokenStorageFactory.set('auth', {
+                    token: token
+                });
                 $rootScope.$broadcast('tokenAuth:set');
             },
             clearToken: function () {
