@@ -1,4 +1,4 @@
-(function (angular) {
+(function (angular, document) {
     'use strict';
 
     var auth = angular.module('angular-token-auth', ['ngCookies', 'project_settings']);
@@ -138,43 +138,71 @@
     }]);
 
     auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
-        //return true if browser has cookie support
-        var cookieCheck = function () {
-            $cookieStore.put('test', 'test');
-            var test = $cookieStore.get('test');
-            return (angular.isDefined(test) && test === 'test');
+
+        var storageMethods = {
+            cookie: {
+                test: function () {
+                    // return true if browser has cookie support
+                    // using angular $cookieStore incorrectly returns true here due to the 
+                    //  way it stores cookies internally. For this reason we interact with 
+                    //  the document cookies directly
+                    document.cookie = 'testcookie=test';
+                    var cookieEnabled = (document.cookie.indexOf('testcookie') !== -1) ? true : false;
+                    //delete test cookie by setting old expiry date
+                    document.cookie = 'testcookie=test;expires=Thu, 01-Jan-1970 00:00:01 GMT';
+                    return cookieEnabled;
+                },
+                set: function (key, value) {
+                    $cookieStore.put(key, value);
+                },
+                get: function (key) {
+                    return $cookieStore.get(key);
+                },
+                clear: function (key) {
+                    $cookieStore.remove(key);
+                }
+            },
+            localStorage: {
+                test: function () {
+                    return angular.isDefined($window.localStorage);
+                },
+                set: function (key, value) {
+                    $window.localStorage.setItem(key, angular.toJson(value));
+                },
+                get: function (key) {
+                    return angular.fromJson($window.localStorage.getItem(key));
+                },
+                clear: function (key) {
+                    $window.localStorage.removeItem(key);
+                }
+            }
         };
 
         // Determine how we should save the token
         var storageType;
-        if (cookieCheck() === true) {
+        //use cookies if available, otherwise try localstorage
+        if (storageMethods['cookie'].test() === true) {
             storageType = 'cookie';
-        } else if ($window.localStorage) {
+        } else if (storageMethods['localStorage'].test()) {
             storageType = 'localStorage';
         }
 
         return {
             get: function (key) {
                 var value = null;
-                if (storageType === 'cookie') {
-                    value = $cookieStore.get(key);
-                } else if (storageType === 'localStorage') {
-                    value = angular.fromJson($window.localStorage.getItem(key));
+                if (storageType) {
+                    value = storageMethods[storageType].get(key);
                 }
                 return value;
             },
             set: function (key, value) {
-                if (storageType === 'cookie') {
-                    $cookieStore.put(key, value);
-                } else if (storageType === 'localStorage') {
-                    $window.localStorage.setItem(key, angular.toJson(value));
+                if (storageType) {
+                    storageMethods[storageType].set(key, value);
                 }
             },
             clear: function (key) {
-                if (storageType === 'cookie') {
-                    $cookieStore.remove(key);
-                } else if (storageType === 'localStorage') {
-                    $window.localStorage.removeItem(key);
+                if (storageType) {
+                    storageMethods[storageType].clear(key);
                 }
             }
         };
@@ -185,14 +213,12 @@
             getToken: function () {
                 var auth = tokenStorageFactory.get('auth');
                 if (angular.isDefined(auth)) {
-                    return auth.token;
+                    return auth;
                 }
                 return null;
             },
             setToken: function (token) {
-                tokenStorageFactory.set('auth', {
-                    token: token
-                });
+                tokenStorageFactory.set('auth', token);
                 $rootScope.$broadcast('tokenAuth:set');
             },
             clearToken: function () {
@@ -227,4 +253,4 @@
             }
         };
     }]);
-}(window.angular));
+}(window.angular, document));
