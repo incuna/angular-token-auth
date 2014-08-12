@@ -169,7 +169,12 @@
                     $window.localStorage.setItem(key, angular.toJson(value));
                 },
                 get: function (key) {
-                    return angular.fromJson($window.localStorage.getItem(key));
+                    var value;
+                    var jsonObject = $window.localStorage.getItem(key);
+                    if (jsonObject) {
+                        value = angular.fromJson(jsonObject);
+                    }
+                    return value;
                 },
                 clear: function (key) {
                     $window.localStorage.removeItem(key);
@@ -188,7 +193,7 @@
 
         return {
             get: function (key) {
-                var value = null;
+                var value;
                 if (storageType) {
                     value = storageMethods[storageType].get(key);
                 }
