@@ -137,23 +137,82 @@
         authenticationFactory.logout();
     }]);
 
-    auth.factory('tokenFactory', ['$rootScope', '$cookieStore', function ($rootScope, $cookieStore) {
+    auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
+
+        var storageMethods = {
+            noSupport: {
+                // No supported storage methods, but we have to return empty functions so the 
+                //  interface doesn't break
+                set: function () {},
+                get: function () {},
+                clear: function () {}
+            },
+            cookie: {
+                test: function () {
+                    // Return true if browser has cookie support. Using angular $cookieStore incorrectly 
+                    //  returns true here when cookies are not supported because of internal caching 
+                    //  between digest cycles.
+                    //  For this reason we interact with the document cookies directly
+                    $window.document.cookie = 'testcookie=test';
+                    var cookieEnabled = ($window.document.cookie.indexOf('testcookie') !== -1) ? true : false;
+                    //delete test cookie by setting old expiry date
+                    $window.document.cookie = 'testcookie=test;expires=Thu, 01-Jan-1970 00:00:01 GMT';
+                    return cookieEnabled;
+                },
+                set: function (key, value) {
+                    $cookieStore.put(key, value);
+                },
+                get: function (key) {
+                    return $cookieStore.get(key);
+                },
+                clear: function (key) {
+                    $cookieStore.remove(key);
+                }
+            },
+            localStorage: {
+                test: function () {
+                    return angular.isDefined($window.localStorage);
+                },
+                set: function (key, value) {
+                    $window.localStorage.setItem(key, angular.toJson(value));
+                },
+                get: function (key) {
+                    return angular.fromJson($window.localStorage.getItem(key));
+                },
+                clear: function (key) {
+                    $window.localStorage.removeItem(key);
+                }
+            }
+        };
+
+        //use cookies if available, otherwise try localstorage
+        if (storageMethods['cookie'].test() === true) {
+            return storageMethods['cookie'];
+        } else if (storageMethods['localStorage'].test()) {
+            return storageMethods['localStorage'];
+        } else {
+            return storageMethods['noSupport'];
+        }
+
+    }]);
+
+    auth.factory('tokenFactory', ['$rootScope', 'tokenStorageFactory', function ($rootScope, tokenStorageFactory) {
         return {
             getToken: function () {
-                var auth = $cookieStore.get('auth');
-                if (angular.isDefined(auth)) {
+                var auth = tokenStorageFactory.get('auth');
+                if (angular.isObject(auth) && angular.isDefined(auth.token)) {
                     return auth.token;
                 }
                 return null;
             },
             setToken: function (token) {
-                $cookieStore.put('auth', {
+                tokenStorageFactory.set('auth', {
                     token: token
                 });
                 $rootScope.$broadcast('tokenAuth:set');
             },
             clearToken: function () {
-                $cookieStore.remove('auth');
+                tokenStorageFactory.clear('auth');
                 $rootScope.$broadcast('tokenAuth:clear');
             }
         };

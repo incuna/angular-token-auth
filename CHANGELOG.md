@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# 4.1.0
+* Save token to local storage as well as cookies to support cordova
+
 # 4.0.0
 
 * Only transform request headers for hosts defined in the ALLOWED_HOSTS
