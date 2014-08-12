@@ -142,10 +142,9 @@
         var storageMethods = {
             cookie: {
                 test: function () {
-                    // return true if browser has cookie support
-                    // using angular $cookieStore incorrectly returns true here due to the 
-                    //  way it stores cookies internally. For this reason we interact with 
-                    //  the document cookies directly
+                    // Return true if browser has cookie support. Using angular $cookieStore 
+                    //  incorrectly returns true here due to the way it stores the cookie object internally. 
+                    //  For this reason we interact with the document cookies directly
                     document.cookie = 'testcookie=test';
                     var cookieEnabled = (document.cookie.indexOf('testcookie') !== -1) ? true : false;
                     //delete test cookie by setting old expiry date
