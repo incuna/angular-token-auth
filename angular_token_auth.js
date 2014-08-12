@@ -149,8 +149,9 @@
             },
             cookie: {
                 test: function () {
-                    // Return true if browser has cookie support. Using angular $cookieStore 
-                    //  incorrectly returns true here due to the way it stores the cookie object internally. 
+                    // Return true if browser has cookie support. Using angular $cookieStore incorrectly 
+                    //  returns true here when cookies are not supported because of internal caching 
+                    //  between digest cycles.
                     //  For this reason we interact with the document cookies directly
                     document.cookie = 'testcookie=test';
                     var cookieEnabled = (document.cookie.indexOf('testcookie') !== -1) ? true : false;
