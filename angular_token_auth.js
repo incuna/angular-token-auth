@@ -1,4 +1,4 @@
-(function (angular, document) {
+(function (angular) {
     'use strict';
 
     var auth = angular.module('angular-token-auth', ['ngCookies', 'project_settings']);
@@ -153,10 +153,10 @@
                     //  returns true here when cookies are not supported because of internal caching 
                     //  between digest cycles.
                     //  For this reason we interact with the document cookies directly
-                    document.cookie = 'testcookie=test';
-                    var cookieEnabled = (document.cookie.indexOf('testcookie') !== -1) ? true : false;
+                    $window.document.cookie = 'testcookie=test';
+                    var cookieEnabled = ($window.document.cookie.indexOf('testcookie') !== -1) ? true : false;
                     //delete test cookie by setting old expiry date
-                    document.cookie = 'testcookie=test;expires=Thu, 01-Jan-1970 00:00:01 GMT';
+                    $window.document.cookie = 'testcookie=test;expires=Thu, 01-Jan-1970 00:00:01 GMT';
                     return cookieEnabled;
                 },
                 set: function (key, value) {
@@ -248,4 +248,4 @@
             }
         };
     }]);
-}(window.angular, document));
+}(window.angular));
