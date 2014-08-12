@@ -200,7 +200,7 @@
         return {
             getToken: function () {
                 var auth = tokenStorageFactory.get('auth');
-                if (angular.isObject(auth)) {
+                if (angular.isObject(auth) && angular.isDefined(auth.token)) {
                     return auth.token;
                 }
                 return null;
