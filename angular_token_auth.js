@@ -177,12 +177,7 @@
                     $window.localStorage.setItem(key, angular.toJson(value));
                 },
                 get: function (key) {
-                    var value;
-                    var jsonObject = $window.localStorage.getItem(key);
-                    if (jsonObject) {
-                        value = angular.fromJson(jsonObject);
-                    }
-                    return value;
+                    return angular.fromJson($window.localStorage.getItem(key));
                 },
                 clear: function (key) {
                     $window.localStorage.removeItem(key);
@@ -205,7 +200,7 @@
         return {
             getToken: function () {
                 var auth = tokenStorageFactory.get('auth');
-                if (angular.isDefined(auth)) {
+                if (angular.isObject(auth)) {
                     return auth.token;
                 }
                 return null;
