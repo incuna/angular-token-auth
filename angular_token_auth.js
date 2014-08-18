@@ -49,7 +49,7 @@
             },
             responseError: function (response) {
                 if (response.status === 401) {
-                    tokenFactory.clearToken();
+                    tokenFactory.clearAuth();
                 }
                 return $q.reject(response);
             }
@@ -205,13 +205,11 @@
                 }
                 return null;
             },
-            setToken: function (token) {
-                authStorageFactory.set('auth', {
-                    token: token
-                });
+            setAuth: function (data) {
+                authStorageFactory.set('auth', data);
                 $rootScope.$broadcast('tokenAuth:set');
             },
-            clearToken: function () {
+            clearAuth: function () {
                 authStorageFactory.clear('auth');
                 $rootScope.$broadcast('tokenAuth:clear');
             }
@@ -229,7 +227,7 @@
                     username: username,
                     password: password
                 }).success(function (data) {
-                    tokenFactory.setToken(data.token);
+                    tokenFactory.setAuth(data);
                     deferred.resolve(data);
                 }).error(function (data) {
                     deferred.reject(data);
@@ -238,7 +236,7 @@
                 return deferred.promise;
             },
             logout: function () {
-                tokenFactory.clearToken();
+                tokenFactory.clearAuth();
                 $location.url(MODULE_SETTINGS.LOGOUT);
             }
         };
