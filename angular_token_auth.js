@@ -198,9 +198,16 @@
 
     auth.factory('tokenFactory', ['$rootScope', 'authStorageFactory', function ($rootScope, authStorageFactory) {
         return {
-            getToken: function () {
+            getAuth: function () {
                 var auth = authStorageFactory.get('auth');
-                if (angular.isObject(auth) && angular.isDefined(auth.token)) {
+                if (angular.isObject(auth)) {
+                    return auth;
+                }
+                return null;
+            },
+            getToken: function () {
+                var auth = this.getAuth();
+                if (auth !== null && angular.isDefined(auth.token)) {
                     return auth.token;
                 }
                 return null;
