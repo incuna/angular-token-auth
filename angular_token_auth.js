@@ -49,7 +49,7 @@
             },
             responseError: function (response) {
                 if (response.status === 401) {
-                    tokenFactory.clearToken();
+                    tokenStorageFactory.clear();
                 }
                 return $q.reject(response);
             }
