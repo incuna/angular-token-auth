@@ -27,7 +27,7 @@
             });
     }]);
 
-    auth.factory('authInterceptor', ['$rootScope', '$q', 'tokenFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $q, tokenFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.factory('authInterceptor', ['$rootScope', '$q', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $q, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         return {
@@ -39,7 +39,7 @@
 
                 if (allowedHosts.indexOf(urlElement.host) > -1 || allowedHosts.indexOf(urlElement.hostname) > -1) {
                     config.headers = config.headers || {};
-                    var token = tokenFactory.getToken();
+                    var token = authFactory.getToken();
                     if (token) {
                         config.headers.Authorization = MODULE_SETTINGS.AUTH_HEADER_PREFIX + ' ' + token;
                     }
@@ -49,7 +49,7 @@
             },
             responseError: function (response) {
                 if (response.status === 401) {
-                    tokenFactory.clearAuth();
+                    authFactory.clearAuth();
                 }
                 return $q.reject(response);
             }
@@ -60,7 +60,7 @@
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    auth.run(['$rootScope', '$location', 'tokenFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $location, tokenFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.run(['$rootScope', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         $rootScope.$on('$routeChangeStart', function (e, next, current) {
@@ -74,7 +74,7 @@
             // If the next route isn't anonymous and a token doesn't exist,
             // redirect to the log in page with a `next` parameter set to the
             // anonymous path.
-            if (!nextRouteIsAnonymous && !tokenFactory.getToken()) {
+            if (!nextRouteIsAnonymous && !authFactory.getToken()) {
                 $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
                 $location.replace();
             }
@@ -82,11 +82,11 @@
 
     }]);
 
-    auth.directive('loginForm', ['$location', 'authActionsFactory', 'tokenFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, authActionsFactory, tokenFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.directive('loginForm', ['$location', 'authActionsFactory', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, authActionsFactory, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         // If we are already logged in.
-        if (tokenFactory.getToken()) {
+        if (authFactory.getToken()) {
             $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
         }
 
@@ -196,7 +196,7 @@
 
     }]);
 
-    auth.factory('tokenFactory', ['$rootScope', 'authStorageFactory', function ($rootScope, authStorageFactory) {
+    auth.factory('authFactory', ['$rootScope', 'authStorageFactory', function ($rootScope, authStorageFactory) {
         return {
             getAuth: function () {
                 var auth = authStorageFactory.get('auth');
@@ -223,7 +223,7 @@
         };
     }]);
 
-    auth.factory('authActionsFactory', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'tokenFactory', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS, tokenFactory) {
+    auth.factory('authActionsFactory', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'authFactory', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS, authFactory) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         return {
@@ -234,7 +234,7 @@
                     username: username,
                     password: password
                 }).success(function (data) {
-                    tokenFactory.setAuth(data);
+                    authFactory.setAuth(data);
                     deferred.resolve(data);
                 }).error(function (data) {
                     deferred.reject(data);
@@ -243,7 +243,7 @@
                 return deferred.promise;
             },
             logout: function () {
-                tokenFactory.clearAuth();
+                authFactory.clearAuth();
                 $location.url(MODULE_SETTINGS.LOGOUT);
             }
         };
