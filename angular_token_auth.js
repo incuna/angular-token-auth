@@ -137,7 +137,7 @@
         authActionsFactory.logout();
     }]);
 
-    auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
+    auth.factory('authStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
 
         var storageMethods = {
             noSupport: {
@@ -196,23 +196,23 @@
 
     }]);
 
-    auth.factory('tokenFactory', ['$rootScope', 'tokenStorageFactory', function ($rootScope, tokenStorageFactory) {
+    auth.factory('tokenFactory', ['$rootScope', 'authStorageFactory', function ($rootScope, authStorageFactory) {
         return {
             getToken: function () {
-                var auth = tokenStorageFactory.get('auth');
+                var auth = authStorageFactory.get('auth');
                 if (angular.isObject(auth) && angular.isDefined(auth.token)) {
                     return auth.token;
                 }
                 return null;
             },
             setToken: function (token) {
-                tokenStorageFactory.set('auth', {
+                authStorageFactory.set('auth', {
                     token: token
                 });
                 $rootScope.$broadcast('tokenAuth:set');
             },
             clearToken: function () {
-                tokenStorageFactory.clear('auth');
+                authStorageFactory.clear('auth');
                 $rootScope.$broadcast('tokenAuth:clear');
             }
         };
