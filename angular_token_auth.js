@@ -82,7 +82,7 @@
 
     }]);
 
-    auth.directive('loginForm', ['$location', 'authenticationFactory', 'tokenFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, authenticationFactory, tokenFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.directive('loginForm', ['$location', 'authActionsFactory', 'tokenFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, authActionsFactory, tokenFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         // If we are already logged in.
@@ -112,7 +112,7 @@
 
                     scope.status.authenticating = true;
 
-                    authenticationFactory.login(scope.fields.username.value, scope.fields.password.value)
+                    authActionsFactory.login(scope.fields.username.value, scope.fields.password.value)
                         .then(function (response) {
                             $location.url($location.search().next || MODULE_SETTINGS.LOGIN_REDIRECT_URL);
                         }, function (response, status) {
@@ -133,8 +133,8 @@
 
     auth.controller('LoginCtrl', [function () {}]);
 
-    auth.controller('LogoutCtrl', ['authenticationFactory', function (authenticationFactory) {
-        authenticationFactory.logout();
+    auth.controller('LogoutCtrl', ['authActionsFactory', function (authActionsFactory) {
+        authActionsFactory.logout();
     }]);
 
     auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
@@ -218,7 +218,7 @@
         };
     }]);
 
-    auth.factory('authenticationFactory', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'tokenFactory', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS, tokenFactory) {
+    auth.factory('authActionsFactory', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'tokenFactory', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS, tokenFactory) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         return {
