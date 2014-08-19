@@ -1,5 +1,11 @@
 # CHANGELOG
 
+# 5.0.0
+
+* Renamed all of the services to fit the data they return.
+* Added `getAuth` method to the authFactory which returns all the data
+  stored from the auth response.
+
 # 4.1.0
 * Save token to local storage as well as cookies to support cordova
 
