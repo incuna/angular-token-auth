@@ -67,7 +67,7 @@
             var nextRoute = next.$$route;
             // By default, all routes should be anonymous.
             var nextRouteIsAnonymous = true;
-            if (nextRoute.anonymous === false) {
+            if (angular.isDefined(nextRoute) && nextRoute.anonymous === false) {
                 nextRouteIsAnonymous = false;
             }
 
