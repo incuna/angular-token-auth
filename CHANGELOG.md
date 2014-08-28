@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.0.1
+
+* Fixed issue where the module would throw an error if route.$$next was undefined.
+
 # 5.0.0
 
 * Renamed all of the services to fit the data they return.
