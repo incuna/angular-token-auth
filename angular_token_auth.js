@@ -67,7 +67,7 @@
             var nextRoute = next.$$route;
             // By default, all routes should be anonymous.
             var nextRouteIsAnonymous = true;
-            if (nextRoute.anonymous === false) {
+            if (angular.isDefined(nextRoute) && nextRoute.anonymous === false) {
                 nextRouteIsAnonymous = false;
             }
 
@@ -169,7 +169,7 @@
 
         var storageMethods = {
             noSupport: {
-                // No supported storage methods, but we have to return empty functions so the 
+                // No supported storage methods, but we have to return empty functions so the
                 //  interface doesn't break
                 set: function () {},
                 get: function () {},
@@ -177,8 +177,8 @@
             },
             cookie: {
                 test: function () {
-                    // Return true if browser has cookie support. Using angular $cookieStore incorrectly 
-                    //  returns true here when cookies are not supported because of internal caching 
+                    // Return true if browser has cookie support. Using angular $cookieStore incorrectly
+                    //  returns true here when cookies are not supported because of internal caching
                     //  between digest cycles.
                     //  For this reason we interact with the document cookies directly
                     $window.document.cookie = 'testcookie=test';
