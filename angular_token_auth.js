@@ -67,7 +67,7 @@
             var nextRoute = next.$$route;
             // By default, all routes should be anonymous.
             var nextRouteIsAnonymous = true;
-            if (angular.isDefined(nextRoute) && nextRoute.anonymous === false) {
+            if (nextRoute.anonymous === false) {
                 nextRouteIsAnonymous = false;
             }
 
@@ -82,30 +82,36 @@
 
     }]);
 
-    auth.directive('loginForm', ['$location', 'authActionsFactory', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, authActionsFactory, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
-        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+    auth.factory('authLoginFormFactory', [
+        'authActionsFactory', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS',
+        function (authActionsFactory, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
 
-        // If we are already logged in.
-        if (authFactory.getToken()) {
-            $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
-        }
-
-        return {
-            restrict: 'A',
-            scope: true,
-            templateUrl: 'templates/auth/login_form.html',
-            link: function (scope, element, attrs) {
-                scope.status = {};
-                scope.fields = {
-                    username: {
-                        required: true
-                    },
-                    password: {
-                        required: true
+            var directive = {
+                init: function () {
+                    // If we are already logged in.
+                    if (authFactory.getToken()) {
+                        $location.url(this.getSettings().LOGIN_REDIRECT_URL);
                     }
-                };
-
-                scope.login = function () {
+                },
+                getSettings: function () {
+                    return angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+                },
+                loginSuccess: function (response) {
+                    $location.url($location.search().next || this.getSettings().LOGIN_REDIRECT_URL);
+                },
+                loginFailed: function (response) {
+                    if (response.non_field_errors) {
+                        scope.fields.errors = [{
+                            msg: response.non_field_errors[0]
+                        }];
+                    }
+                    scope.fields.username.errors = response.username ? response.username[0] : '';
+                    scope.fields.password.errors = response.password ? response.password[0] : '';
+                },
+                loginFinally: function () {
+                    scope.status.authenticating = false;
+                },
+                loginClick: function () {
                     scope.fields.errors = '';
                     scope.fields.username.errors = '';
                     scope.fields.password.errors = '';
@@ -113,23 +119,45 @@
                     scope.status.authenticating = true;
 
                     authActionsFactory.login(scope.fields.username.value, scope.fields.password.value)
-                        .then(function (response) {
-                            $location.url($location.search().next || MODULE_SETTINGS.LOGIN_REDIRECT_URL);
-                        }, function (response, status) {
-                            if (response.non_field_errors) {
-                                scope.fields.errors = [{
-                                    msg: response.non_field_errors[0]
-                                }];
-                            }
-                            scope.fields.username.errors = response.username ? response.username[0] : '';
-                            scope.fields.password.errors = response.password ? response.password[0] : '';
-                        })['finally'](function () {
-                            scope.status.authenticating = false;
-                        });
-                };
+                        .then(this.loginSuccess, this.loginFail)
+                        ['finally'](this.loginFinally);
+                },
+                directiveLink: function (scope, element, attrs) {
+                    scope.status = {};
+                    scope.fields = {
+                        username: {
+                            required: true
+                        },
+                        password: {
+                            required: true
+                        }
+                    };
+
+                    scope.login = this.loginClick;
+                },
+                getDirective: function () {
+                    var self = this;
+
+                    this.init();
+                    return {
+                        restrict: 'A',
+                        scope: true,
+                        templateUrl: 'templates/auth/login_form.html',
+                        link: self.directiveLink
+                    };
+                }
             }
-        };
-    }]);
+
+            return directive;
+        }
+    ]);
+
+    auth.directive('loginForm', [
+        'authLoginFormFactory',
+        function (authLoginFormFactory) {
+            return authLoginFormFactory.getDirective();
+        }
+    ]);
 
     auth.controller('LoginCtrl', [function () {}]);
 
@@ -141,7 +169,7 @@
 
         var storageMethods = {
             noSupport: {
-                // No supported storage methods, but we have to return empty functions so the
+                // No supported storage methods, but we have to return empty functions so the 
                 //  interface doesn't break
                 set: function () {},
                 get: function () {},
@@ -149,8 +177,8 @@
             },
             cookie: {
                 test: function () {
-                    // Return true if browser has cookie support. Using angular $cookieStore incorrectly
-                    //  returns true here when cookies are not supported because of internal caching
+                    // Return true if browser has cookie support. Using angular $cookieStore incorrectly 
+                    //  returns true here when cookies are not supported because of internal caching 
                     //  between digest cycles.
                     //  For this reason we interact with the document cookies directly
                     $window.document.cookie = 'testcookie=test';
