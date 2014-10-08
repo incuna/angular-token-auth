@@ -87,9 +87,9 @@
     //     'authLoginFormFactory',
     //     function (authLoginFormFactory) {
     //         return angular.extend({}, authLoginFormFactory, {
-    //             loginFinally: function () {
-    //                 authLoginFormFactory.loginFinally();
-    //                 // my own code
+    //             loginSuccess: function (response) {
+    //                 authLoginFormFactory.loginSuccess(response);
+    //                 // your extra app code
     //             }
     //         });
     //     }
