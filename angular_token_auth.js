@@ -133,16 +133,10 @@
 
                     authActionsFactory.login(scope.fields.username.value, scope.fields.password.value)
                         .then(
-                            angular.bind(this, function (response) {
-                                this.loginSuccess(response);
-                            }),
-                            angular.bind(this, function (response) {
-                                this.loginFailed(response, scope);
-                            })
+                            angular.bind(this, this.loginSuccess, response),
+                            angular.bind(this, this.loginFailed, response, scope)
                         )
-                        ['finally'](angular.bind(this, function (response) {
-                            this.loginFinally(response, scope);
-                        }));
+                        ['finally'](angular.bind(this, this.loginFinally, response, scope));
                 },
                 link: function (scope, element, attrs) {
                     scope.status = {};
@@ -155,9 +149,7 @@
                         }
                     };
 
-                    scope.login = angular.bind(this, function () {
-                        this.loginClick(scope);
-                    });
+                    scope.login = angular.bind(this, this.loginClick, scope);
                 }
             }
         }
