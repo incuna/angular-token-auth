@@ -99,15 +99,17 @@
         'authActionsFactory', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS',
         function (authActionsFactory, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
 
+            var getSettings = function () {
+                return angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+            };
+
             // If we are already logged in.
             if (authFactory.getToken()) {
-                $location.url(this.getSettings().LOGIN_REDIRECT_URL);
+                $location.url(getSettings().LOGIN_REDIRECT_URL);
             }
 
             return {
-                getSettings: function () {
-                    return angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
-                },
+                getSettings: getSettings,
                 loginSuccess: function (response) {
                     $location.url($location.search().next || this.getSettings().LOGIN_REDIRECT_URL);
                 },
@@ -131,9 +133,14 @@
                     scope.status.authenticating = true;
 
                     authActionsFactory.login(scope.fields.username.value, scope.fields.password.value)
-                        .then(this.loginSuccess, angular.bind(this, function (response) {
-                            this.loginFailed(response, scope);
-                        }))
+                        .then(
+                            angular.bind(this, function (response) {
+                                this.loginSuccess(response);
+                            }),
+                            angular.bind(this, function (response) {
+                                this.loginFailed(response, scope);
+                            })
+                        )
                         ['finally'](this.loginFinally);
                 },
                 link: function (scope, element, attrs) {
