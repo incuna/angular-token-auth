@@ -154,7 +154,6 @@
     auth.factory('authLoginFormDirectiveFactory', [
         'authLoginFormFactory',
         function (authLoginFormFactory) {
-
             return {
                 restrict: 'A',
                 scope: true,
