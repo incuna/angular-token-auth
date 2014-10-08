@@ -86,13 +86,12 @@
         'authActionsFactory', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS',
         function (authActionsFactory, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
 
-            var directive = {
-                init: function () {
-                    // If we are already logged in.
-                    if (authFactory.getToken()) {
-                        $location.url(this.getSettings().LOGIN_REDIRECT_URL);
-                    }
-                },
+            // If we are already logged in.
+            if (authFactory.getToken()) {
+                $location.url(this.getSettings().LOGIN_REDIRECT_URL);
+            }
+
+            return {
                 getSettings: function () {
                     return angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
                 },
@@ -122,7 +121,7 @@
                         .then(this.loginSuccess, this.loginFail)
                         ['finally'](this.loginFinally);
                 },
-                directiveLink: function (scope, element, attrs) {
+                link: function (scope, element, attrs) {
                     scope.status = {};
                     scope.fields = {
                         username: {
@@ -134,28 +133,28 @@
                     };
 
                     scope.login = this.loginClick;
-                },
-                getDirective: function () {
-                    var self = this;
-
-                    this.init();
-                    return {
-                        restrict: 'A',
-                        scope: true,
-                        templateUrl: 'templates/auth/login_form.html',
-                        link: self.directiveLink
-                    };
                 }
             }
+        }
+    ]);
 
-            return directive;
+    auth.factory('authLoginFormDirectiveFactory', [
+        'authLoginFormFactory',
+        function (authLoginFormFactory) {
+
+            return {
+                restrict: 'A',
+                scope: true,
+                templateUrl: 'templates/auth/login_form.html',
+                link: angular.bind(authLoginFormFactory, authLoginFormFactory.link)
+            };
         }
     ]);
 
     auth.directive('loginForm', [
-        'authLoginFormFactory',
-        function (authLoginFormFactory) {
-            return authLoginFormFactory.getDirective();
+        'authLoginFormDirectiveFactory',
+        function (authLoginFormDirectiveFactory) {
+            return authLoginFormDirectiveFactory;
         }
     ]);
 
