@@ -111,7 +111,7 @@
                 loginSuccess: function (response) {
                     $location.url($location.search().next || this.getSettings().LOGIN_REDIRECT_URL);
                 },
-                loginFailed: function (response) {
+                loginFailed: function (response, scope) {
                     if (response.non_field_errors) {
                         scope.fields.errors = [{
                             msg: response.non_field_errors[0]
@@ -123,7 +123,7 @@
                 loginFinally: function () {
                     scope.status.authenticating = false;
                 },
-                loginClick: function () {
+                loginClick: function (scope) {
                     scope.fields.errors = '';
                     scope.fields.username.errors = '';
                     scope.fields.password.errors = '';
@@ -131,7 +131,9 @@
                     scope.status.authenticating = true;
 
                     authActionsFactory.login(scope.fields.username.value, scope.fields.password.value)
-                        .then(this.loginSuccess, this.loginFail)
+                        .then(this.loginSuccess, angular.bind(this, function (response) {
+                            this.loginFailed(response, scope);
+                        }))
                         ['finally'](this.loginFinally);
                 },
                 link: function (scope, element, attrs) {
@@ -145,7 +147,9 @@
                         }
                     };
 
-                    scope.login = this.loginClick;
+                    scope.login = angular.bind(this, function () {
+                        this.loginClick(scope);
+                    });
                 }
             }
         }
