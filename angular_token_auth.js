@@ -82,6 +82,19 @@
 
     }]);
 
+    // extend this in your app using:
+    // auth.factory('appAuthLoginFormFactory', [
+    //     'authLoginFormFactory'
+    //     function (authLoginFormFactory) {
+
+    //         return angular.extend({}, authLoginFormFactory, {
+    //             loginFinally: function () {
+    //                 authLoginFormFactory.loginFinally();
+    //                 // my own code
+    //             }
+    //         });
+    //     }
+    // ]);
     auth.factory('authLoginFormFactory', [
         'authActionsFactory', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS',
         function (authActionsFactory, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -151,6 +164,17 @@
         }
     ]);
 
+    // extend this in your app by doing:
+    // auth.directive('appLoginForm', [
+    //     'authLoginFormDirectiveFactory', 'appAuthLoginFormFactory',
+    //     function (authLoginFormDirectiveFactory, appAuthLoginFormFactory) {
+
+    //         return angular.extend({}, authLoginFormDirectiveFactory, {
+    //             link: angular.bind(appAuthLoginFormFactory, appAuthLoginFormFactory.link)
+    //         };
+
+    //     }
+    // ]);
     auth.directive('loginForm', [
         'authLoginFormDirectiveFactory',
         function (authLoginFormDirectiveFactory) {
