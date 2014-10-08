@@ -179,7 +179,7 @@
     //     function (authLoginFormDirectiveFactory, appAuthLoginFormFactory) {
     //         return angular.extend({}, authLoginFormDirectiveFactory, {
     //             link: angular.bind(appAuthLoginFormFactory, appAuthLoginFormFactory.link)
-    //         };
+    //         });
     //     }
     // ]);
     auth.directive('loginForm', [
