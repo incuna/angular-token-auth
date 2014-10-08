@@ -121,7 +121,7 @@
                     scope.fields.username.errors = response.username ? response.username[0] : '';
                     scope.fields.password.errors = response.password ? response.password[0] : '';
                 },
-                loginFinally: function () {
+                loginFinally: function (response, scope) {
                     scope.status.authenticating = false;
                 },
                 loginClick: function (scope) {
@@ -140,7 +140,9 @@
                                 this.loginFailed(response, scope);
                             })
                         )
-                        ['finally'](this.loginFinally);
+                        ['finally'](angular.bind(this, function (response) {
+                            this.loginFinally(response, scope);
+                        }));
                 },
                 link: function (scope, element, attrs) {
                     scope.status = {};
