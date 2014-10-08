@@ -84,9 +84,8 @@
 
     // extend this in your app using:
     // auth.factory('appAuthLoginFormFactory', [
-    //     'authLoginFormFactory'
+    //     'authLoginFormFactory',
     //     function (authLoginFormFactory) {
-
     //         return angular.extend({}, authLoginFormFactory, {
     //             loginFinally: function () {
     //                 authLoginFormFactory.loginFinally();
@@ -178,11 +177,9 @@
     // auth.directive('appLoginForm', [
     //     'authLoginFormDirectiveFactory', 'appAuthLoginFormFactory',
     //     function (authLoginFormDirectiveFactory, appAuthLoginFormFactory) {
-
     //         return angular.extend({}, authLoginFormDirectiveFactory, {
     //             link: angular.bind(appAuthLoginFormFactory, appAuthLoginFormFactory.link)
     //         };
-
     //     }
     // ]);
     auth.directive('loginForm', [
