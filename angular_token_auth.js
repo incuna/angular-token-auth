@@ -86,12 +86,14 @@
     // auth.factory('appAuthLoginFormFactory', [
     //     'authLoginFormFactory',
     //     function (authLoginFormFactory) {
-    //         return angular.extend({}, authLoginFormFactory, {
-    //             loginSuccess: function (response) {
-    //                 authLoginFormFactory.loginSuccess(response);
-    //                 // your extra app code
-    //             }
-    //         });
+    //         var appDirectiveLink = function (scope, element, attrs) {
+    //             authLoginFormFactory.apply(this, arguments);
+    //         };
+    //         appDirectiveLink.prototype = Object.create(authLoginFormFactory.prototype); 
+    //         appDirectiveLink.prototype.loginFailed = function (response) {
+    //              authLoginFormFactory.prototype.loginFailed.apply(this, arguments);
+    //              // your own code here
+    //         };
     //     }
     // ]);
     auth.factory('authLoginFormFactory', [
@@ -107,40 +109,15 @@
                 $location.url(getSettings().LOGIN_REDIRECT_URL);
             }
 
-            return {
-                getSettings: getSettings,
-                loginSuccess: function (response) {
-                    $location.url($location.search().next || this.getSettings().LOGIN_REDIRECT_URL);
-                },
-                loginFailed: function (scope, response) {
-                    if (response.non_field_errors) {
-                        scope.fields.errors = [{
-                            msg: response.non_field_errors[0]
-                        }];
-                    }
-                    scope.fields.username.errors = response.username ? response.username[0] : '';
-                    scope.fields.password.errors = response.password ? response.password[0] : '';
-                },
-                loginFinally: function (scope, response) {
-                    scope.status.authenticating = false;
-                },
-                loginClick: function (scope) {
-                    scope.fields.errors = '';
-                    scope.fields.username.errors = '';
-                    scope.fields.password.errors = '';
+            var directiveLink = function (scope, element, attrs) {
+                this.scope = scope;
+                this.init();
+            };
 
-                    scope.status.authenticating = true;
-
-                    authActionsFactory.login(scope.fields.username.value, scope.fields.password.value)
-                        .then(
-                            angular.bind(this, this.loginSuccess),
-                            angular.bind(this, this.loginFailed, scope)
-                        )
-                        ['finally'](angular.bind(this, this.loginFinally, scope));
-                },
-                link: function (scope, element, attrs) {
-                    scope.status = {};
-                    scope.fields = {
+            directiveLink.prototype = {
+                init: function () {
+                    this.scope.status = {};
+                    this.scope.fields = {
                         username: {
                             required: true
                         },
@@ -149,9 +126,41 @@
                         }
                     };
 
-                    scope.login = angular.bind(this, this.loginClick, scope);
+                    this.scope.login = angular.bind(this, this.loginClick);
+                },
+                getSettings: getSettings,
+                loginSuccess: function (response) {
+                    $location.url($location.search().next || this.getSettings().LOGIN_REDIRECT_URL);
+                },
+                loginFailed: function (response) {
+                    if (response.non_field_errors) {
+                        this.scope.fields.errors = [{
+                            msg: response.non_field_errors[0]
+                        }];
+                    }
+                    this.scope.fields.username.errors = response.username ? response.username[0] : '';
+                    this.scope.fields.password.errors = response.password ? response.password[0] : '';
+                },
+                loginFinally: function (response) {
+                    this.scope.status.authenticating = false;
+                },
+                loginClick: function () {
+                    this.scope.fields.errors = '';
+                    this.scope.fields.username.errors = '';
+                    this.scope.fields.password.errors = '';
+
+                    this.scope.status.authenticating = true;
+
+                    authActionsFactory.login(this.scope.fields.username.value, this.scope.fields.password.value)
+                        .then(
+                            angular.bind(this, this.loginSuccess),
+                            angular.bind(this, this.loginFailed)
+                        )
+                        ['finally'](angular.bind(this, this.loginFinally));
                 }
             }
+
+            return directiveLink;
         }
     ]);
 
@@ -162,7 +171,9 @@
                 restrict: 'A',
                 scope: true,
                 templateUrl: 'templates/auth/login_form.html',
-                link: angular.bind(authLoginFormFactory, authLoginFormFactory.link)
+                link: function (scope, element, attrs) {
+                    new authLoginFormFactory(scope, element, attrs);
+                }
             };
         }
     ]);
@@ -172,7 +183,9 @@
     //     'authLoginFormDirectiveFactory', 'appAuthLoginFormFactory',
     //     function (authLoginFormDirectiveFactory, appAuthLoginFormFactory) {
     //         return angular.extend({}, authLoginFormDirectiveFactory, {
-    //             link: angular.bind(appAuthLoginFormFactory, appAuthLoginFormFactory.link)
+    //             link: function (scope, element, attrs) {
+    //                 new appAuthLoginFormFactory(scope, element, attrs);
+    //             }
     //         });
     //     }
     // ]);
