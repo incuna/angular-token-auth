@@ -82,6 +82,13 @@
 
     }]);
 
+    auth.factory('authModuleSettings', [
+        'TOKEN_AUTH', 'PROJECT_SETTINGS',
+        function (TOKEN_AUTH, PROJECT_SETTINGS) {
+            return angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+        }
+    ]);
+
     // extend this in your app using:
     // auth.factory('appAuthLoginFormFactory', [
     //     'authLoginFormFactory',
@@ -97,16 +104,12 @@
     //     }
     // ]);
     auth.factory('authLoginFormFactory', [
-        'authActionsFactory', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS',
-        function (authActionsFactory, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
-
-            var getSettings = function () {
-                return angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
-            };
+        'authActionsFactory', '$location', 'authFactory', 'authModuleSettings',
+        function (authActionsFactory, $location, authFactory, authModuleSettings) {
 
             // If we are already logged in.
             if (authFactory.getToken()) {
-                $location.url(getSettings().LOGIN_REDIRECT_URL);
+                $location.url(authModuleSettings.LOGIN_REDIRECT_URL);
             }
 
             var directiveLink = function (scope, element, attrs) {
@@ -128,9 +131,8 @@
 
                     this.scope.login = angular.bind(this, this.loginClick);
                 },
-                getSettings: getSettings,
                 loginSuccess: function (response) {
-                    $location.url($location.search().next || this.getSettings().LOGIN_REDIRECT_URL);
+                    $location.url($location.search().next || authModuleSettings.LOGIN_REDIRECT_URL);
                 },
                 loginFailed: function (response) {
                     if (response.non_field_errors) {
