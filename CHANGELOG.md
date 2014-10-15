@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# 5.1.0
+* Login form directive split into separate services and returned as constructor object which allows it to be extended using prototype inheritance in projects
+
 # 5.0.1
 
 * Fixed issue where the module would throw an error if route.$$next was undefined.
