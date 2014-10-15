@@ -91,8 +91,8 @@
 
     // extend this in your app using:
     // auth.factory('appAuthLoginFormFactory', [
-    //     'authLoginFormFactory',
-    //     function (authLoginFormFactory) {
+    //     'AuthLoginFormFactory',
+    //     function (AuthLoginFormFactory) {
     //         var appDirectiveLink = function (scope, element, attrs) {
     //             authLoginFormFactory.apply(this, arguments);
     //         };
@@ -103,7 +103,7 @@
     //         };
     //     }
     // ]);
-    auth.factory('authLoginFormFactory', [
+    auth.factory('AuthLoginFormFactory', [
         'authActionsFactory', '$location', 'authFactory', 'authModuleSettings',
         function (authActionsFactory, $location, authFactory, authModuleSettings) {
 
@@ -112,12 +112,12 @@
                 $location.url(authModuleSettings.LOGIN_REDIRECT_URL);
             }
 
-            var directiveLink = function (scope, element, attrs) {
+            var AuthLoginFormFactory = function (scope, element, attrs) {
                 this.scope = scope;
                 this.init();
             };
 
-            directiveLink.prototype = {
+            AuthLoginFormFactory.prototype = {
                 init: function () {
                     this.scope.status = {};
                     this.scope.fields = {
@@ -162,19 +162,19 @@
                 }
             }
 
-            return directiveLink;
+            return AuthLoginFormFactory;
         }
     ]);
 
     auth.factory('authLoginFormDirectiveFactory', [
-        'authLoginFormFactory',
-        function (authLoginFormFactory) {
+        'AuthLoginFormFactory',
+        function (AuthLoginFormFactory) {
             return {
                 restrict: 'A',
                 scope: true,
                 templateUrl: 'templates/auth/login_form.html',
                 link: function (scope, element, attrs) {
-                    new authLoginFormFactory(scope, element, attrs);
+                    new AuthLoginFormFactory(scope, element, attrs);
                 }
             };
         }
