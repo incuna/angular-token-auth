@@ -90,15 +90,15 @@
     ]);
 
     // extend this in your app using:
-    // auth.factory('appAuthLoginFormFactory', [
+    // auth.factory('AppAuthLoginFormFactory', [
     //     'AuthLoginFormFactory',
     //     function (AuthLoginFormFactory) {
-    //         var appDirectiveLink = function (scope, element, attrs) {
-    //             authLoginFormFactory.apply(this, arguments);
+    //         var AppAuthLoginFormFactory = function (scope, element, attrs) {
+    //             AuthLoginFormFactory.apply(this, arguments);
     //         };
-    //         appDirectiveLink.prototype = Object.create(authLoginFormFactory.prototype); 
-    //         appDirectiveLink.prototype.loginFailed = function (response) {
-    //              authLoginFormFactory.prototype.loginFailed.apply(this, arguments);
+    //         AppAuthLoginFormFactory.prototype = Object.create(authLoginFormFactory.prototype); 
+    //         AppAuthLoginFormFactory.prototype.loginFailed = function (response) {
+    //              AuthLoginFormFactory.prototype.loginFailed.apply(this, arguments);
     //              // your own code here
     //         };
     //     }
