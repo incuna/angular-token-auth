@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.1.0
+
+* Added anonymous only flag to routes.
+
 # 5.0.1
 
 * Fixed issue where the module would throw an error if route.$$next was undefined.
