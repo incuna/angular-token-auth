@@ -97,54 +97,121 @@
 
     }]);
 
-    auth.directive('loginForm', ['$location', 'authActionsFactory', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($location, authActionsFactory, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
-        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
-
-        // If we are already logged in.
-        if (authFactory.getToken()) {
-            $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
+    auth.factory('authModuleSettings', [
+        'TOKEN_AUTH', 'PROJECT_SETTINGS',
+        function (TOKEN_AUTH, PROJECT_SETTINGS) {
+            return angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
         }
+    ]);
 
-        return {
-            restrict: 'A',
-            scope: true,
-            templateUrl: 'templates/auth/login_form.html',
-            link: function (scope, element, attrs) {
-                scope.status = {};
-                scope.fields = {
-                    username: {
-                        required: true
-                    },
-                    password: {
-                        required: true
-                    }
-                };
+    // extend this in your app using:
+    // auth.factory('AppAuthLoginFormFactory', [
+    //     'AuthLoginFormFactory',
+    //     function (AuthLoginFormFactory) {
+    //         var AppAuthLoginFormFactory = function (scope, element, attrs) {
+    //             AuthLoginFormFactory.apply(this, arguments);
+    //         };
+    //         AppAuthLoginFormFactory.prototype = Object.create(authLoginFormFactory.prototype); 
+    //         AppAuthLoginFormFactory.prototype.loginFailed = function (response) {
+    //              AuthLoginFormFactory.prototype.loginFailed.apply(this, arguments);
+    //              // your own code here
+    //         };
+    //     }
+    // ]);
+    auth.factory('AuthLoginFormFactory', [
+        'authActionsFactory', '$location', 'authFactory', 'authModuleSettings',
+        function (authActionsFactory, $location, authFactory, authModuleSettings) {
 
-                scope.login = function () {
-                    scope.fields.errors = '';
-                    scope.fields.username.errors = '';
-                    scope.fields.password.errors = '';
-
-                    scope.status.authenticating = true;
-
-                    authActionsFactory.login(scope.fields.username.value, scope.fields.password.value)
-                        .then(function (response) {
-                            $location.url($location.search().next || MODULE_SETTINGS.LOGIN_REDIRECT_URL);
-                        }, function (response, status) {
-                            if (response.non_field_errors) {
-                                scope.fields.errors = [{
-                                    msg: response.non_field_errors[0]
-                                }];
-                            }
-                            scope.fields.username.errors = response.username ? response.username[0] : '';
-                            scope.fields.password.errors = response.password ? response.password[0] : '';
-                        })['finally'](function () {
-                            scope.status.authenticating = false;
-                        });
-                };
+            // If we are already logged in.
+            if (authFactory.getToken()) {
+                $location.url(authModuleSettings.LOGIN_REDIRECT_URL);
             }
-        };
-    }]);
+
+            var AuthLoginFormFactory = function (scope, element, attrs) {
+                this.scope = scope;
+                this.init();
+            };
+
+            AuthLoginFormFactory.prototype = {
+                init: function () {
+                    this.scope.status = {};
+                    this.scope.fields = {
+                        username: {
+                            required: true
+                        },
+                        password: {
+                            required: true
+                        }
+                    };
+
+                    this.scope.login = angular.bind(this, this.loginClick);
+                },
+                loginSuccess: function (response) {
+                    $location.url($location.search().next || authModuleSettings.LOGIN_REDIRECT_URL);
+                },
+                loginFailed: function (response) {
+                    if (response.non_field_errors) {
+                        this.scope.fields.errors = [{
+                            msg: response.non_field_errors[0]
+                        }];
+                    }
+                    this.scope.fields.username.errors = response.username ? response.username[0] : '';
+                    this.scope.fields.password.errors = response.password ? response.password[0] : '';
+                },
+                loginFinally: function (response) {
+                    this.scope.status.authenticating = false;
+                },
+                loginClick: function () {
+                    this.scope.fields.errors = '';
+                    this.scope.fields.username.errors = '';
+                    this.scope.fields.password.errors = '';
+
+                    this.scope.status.authenticating = true;
+
+                    authActionsFactory.login(this.scope.fields.username.value, this.scope.fields.password.value)
+                        .then(
+                            angular.bind(this, this.loginSuccess),
+                            angular.bind(this, this.loginFailed)
+                        )
+                        ['finally'](angular.bind(this, this.loginFinally));
+                }
+            }
+
+            return AuthLoginFormFactory;
+        }
+    ]);
+
+    auth.factory('authLoginFormDirectiveFactory', [
+        'AuthLoginFormFactory',
+        function (AuthLoginFormFactory) {
+            return {
+                restrict: 'A',
+                scope: true,
+                templateUrl: 'templates/auth/login_form.html',
+                link: function (scope, element, attrs) {
+                    new AuthLoginFormFactory(scope, element, attrs);
+                }
+            };
+        }
+    ]);
+
+    // extend this in your app by doing:
+    // auth.directive('appLoginForm', [
+    //     'authLoginFormDirectiveFactory', 'appAuthLoginFormFactory',
+    //     function (authLoginFormDirectiveFactory, appAuthLoginFormFactory) {
+    //         return angular.extend({}, authLoginFormDirectiveFactory, {
+    //             link: function (scope, element, attrs) {
+    //                 new appAuthLoginFormFactory(scope, element, attrs);
+    //             }
+    //         });
+    //     }
+    // ]);
+    auth.directive('loginForm', [
+        'authLoginFormDirectiveFactory',
+        function (authLoginFormDirectiveFactory) {
+            return authLoginFormDirectiveFactory;
+        }
+    ]);
 
     auth.controller('LoginCtrl', [function () {}]);
 
