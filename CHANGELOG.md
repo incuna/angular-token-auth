@@ -1,7 +1,13 @@
 # CHANGELOG
 
+# 5.2.0
+
+* Added anonymous only flag to routes.
+
 # 5.1.0
-* Login form directive split into separate services and returned as constructor object which allows it to be extended using prototype inheritance in projects
+
+* Login form directive split into separate services and returned as constructor
+  object which allows it to be extended using prototype inheritance in projects.
 
 # 5.0.1
 
