@@ -1,14 +1,16 @@
 (function (angular) {
     'use strict';
 
-    var auth = angular.module('angular-token-auth', ['ngCookies', 'project_settings']);
+    var auth = angular.module('angular-token-auth', ['project_settings']);
 
     // Default settings. You can override these in your settings module.
     auth.constant('TOKEN_AUTH', {
         ENDPOINT: '/auth/',
         LOGIN: '/login/',
         LOGOUT: '/logout/',
-        LOGIN_REDIRECT_URL: '/'
+        LOGIN_REDIRECT_URL: '/',
+        COOKIE_NAME: 'auth',
+        COOKIE_PATH: null
     });
 
     auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -125,29 +127,50 @@
         authenticationFactory.logout();
     }]);
 
-    auth.factory('tokenFactory', ['$rootScope', '$cookieStore', function ($rootScope, $cookieStore) {
+    auth.factory('tokenFactory', ['$rootScope', '$document', '$browser', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, document, $browser, TOKEN_AUTH, PROJECT_SETTINGS) {
+        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+        var rawDocument = document[0];
+        var cookieName = MODULE_SETTINGS.COOKIE_NAME;
+        var cookiePath = MODULE_SETTINGS.COOKIE_PATH ? MODULE_SETTINGS.COOKIE_PATH : $browser.baseHref();
+
+        // Get / set cookie with path
+        var getCookie = function () {
+            var cookieArray = rawDocument.cookie.split('; ');
+            for (var i = 0, l = cookieArray.length; i < l; i++) {
+                var cookie = cookieArray[i];
+                var index = cookie.indexOf('=');
+                if (index > 0) { //ignore nameless cookies
+                    var name = decodeURIComponent(cookie.substring(0, index));
+                    if (name === cookieName) {
+                        var value = decodeURIComponent(cookie.substring(index + 1));
+                        return value ? angular.fromJson(value) : value;
+                    }
+                }
+            }
+        };
+
         return {
             getToken: function () {
-                var auth = $cookieStore.get('auth');
+                var auth = getCookie(cookieName);
                 if (angular.isDefined(auth)) {
                     return auth.token;
                 }
                 return null;
             },
             setToken: function (token) {
-                $cookieStore.put('auth', {
-                    token: token
-                });
+                var encodedValue = encodeURIComponent(angular.toJson({token: token}));
+                rawDocument.cookie = encodeURIComponent(cookieName) + '=' + encodedValue +
+                    (cookiePath ? ';path=' + cookiePath : '');
                 $rootScope.$broadcast('tokenAuth:set');
             },
             clearToken: function () {
-                $cookieStore.remove('auth');
+                rawDocument.cookie = encodeURIComponent(cookieName) + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
                 $rootScope.$broadcast('tokenAuth:clear');
             }
         };
     }]);
 
-    auth.factory('authenticationFactory', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'tokenFactory', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS, tokenFactory) {
+    auth.factory('authenticationFactory', ['$q', '$http', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'tokenFactory', function ($q, $http, $location, TOKEN_AUTH, PROJECT_SETTINGS, tokenFactory) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         return {
