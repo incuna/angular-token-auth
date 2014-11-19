@@ -1,6 +1,6 @@
 # CHANGELOG
 
-# 5.2.1
+# 5.3.0
 
 * Added support for setting the cookie's path using COOKIE_PATH.
 

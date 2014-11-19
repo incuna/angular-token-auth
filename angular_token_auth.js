@@ -255,7 +255,8 @@
                     for (var i = 0, l = cookieArray.length; i < l; i++) {
                         var cookie = cookieArray[i];
                         var index = cookie.indexOf('=');
-                        if (index > 0) { //ignore nameless cookies
+                        //ignore nameless cookies
+                        if (index > 0) { 
                             var name = decodeURIComponent(cookie.substring(0, index));
                             if (name === key) {
                                 var value = decodeURIComponent(cookie.substring(index + 1));
@@ -265,7 +266,7 @@
                     }
                 },
                 clear: function (key) {
-                    //delete test cookie by setting old expiry date
+                    //delete cookie by setting old expiry date
                     $window.document.cookie = encodeURIComponent(key) + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
                 }
             },
