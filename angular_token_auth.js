@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
 
-    var auth = angular.module('angular-token-auth', ['ngCookies', 'project_settings']);
+    var auth = angular.module('angular-token-auth', ['project_settings']);
 
     // Default settings. You can override these in your settings module.
     auth.constant('TOKEN_AUTH', {
@@ -10,7 +10,8 @@
         LOGOUT: '/logout/',
         LOGIN_REDIRECT_URL: '/',
         AUTH_HEADER_PREFIX: 'Token',
-        ALLOWED_HOSTS: []
+        ALLOWED_HOSTS: [],
+        COOKIE_PATH: null
     });
 
     auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -219,7 +220,9 @@
         authActionsFactory.logout();
     }]);
 
-    auth.factory('authStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
+    auth.factory('authStorageFactory', ['$window', '$browser', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($window, $browser, TOKEN_AUTH, PROJECT_SETTINGS) {
+        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+        var cookiePath = MODULE_SETTINGS.COOKIE_PATH ? MODULE_SETTINGS.COOKIE_PATH : $browser.baseHref();
 
         var storageMethods = {
             noSupport: {
@@ -230,6 +233,7 @@
                 clear: function () {}
             },
             cookie: {
+                // Not using angular $cookieStore because it does not support setting a path.
                 test: function () {
                     // Return true if browser has cookie support. Using angular $cookieStore incorrectly
                     //  returns true here when cookies are not supported because of internal caching
@@ -242,13 +246,27 @@
                     return cookieEnabled;
                 },
                 set: function (key, value) {
-                    $cookieStore.put(key, value);
+                    var encodedValue = encodeURIComponent(angular.toJson(value));
+                    $window.document.cookie = encodeURIComponent(key) + '=' + encodedValue +
+                        (cookiePath ? ';path=' + cookiePath : '');
                 },
                 get: function (key) {
-                    return $cookieStore.get(key);
+                    var cookieArray = $window.document.cookie.split('; ');
+                    for (var i = 0, l = cookieArray.length; i < l; i++) {
+                        var cookie = cookieArray[i];
+                        var index = cookie.indexOf('=');
+                        if (index > 0) { //ignore nameless cookies
+                            var name = decodeURIComponent(cookie.substring(0, index));
+                            if (name === key) {
+                                var value = decodeURIComponent(cookie.substring(index + 1));
+                                return value ? angular.fromJson(value) : value;
+                            }
+                        }
+                    }
                 },
                 clear: function (key) {
-                    $cookieStore.remove(key);
+                    //delete test cookie by setting old expiry date
+                    $window.document.cookie = encodeURIComponent(key) + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
                 }
             },
             localStorage: {
@@ -305,7 +323,7 @@
         };
     }]);
 
-    auth.factory('authActionsFactory', ['$q', '$http', '$cookieStore', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'authFactory', function ($q, $http, $cookieStore, $location, TOKEN_AUTH, PROJECT_SETTINGS, authFactory) {
+    auth.factory('authActionsFactory', ['$q', '$http', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'authFactory', function ($q, $http, $location, TOKEN_AUTH, PROJECT_SETTINGS, authFactory) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         return {

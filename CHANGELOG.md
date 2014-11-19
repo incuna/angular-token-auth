@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.2.1
+
+* Added support for setting the cookie's path using COOKIE_PATH.
+
 # 5.2.0
 
 * Added anonymous only flag to routes.
