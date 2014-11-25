@@ -29,7 +29,7 @@
             });
     }]);
 
-    auth.factory('authInterceptor', ['$rootScope', '$q', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $q, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.factory('authInterceptor', ['$rootScope', '$q', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $q, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         return {
@@ -38,8 +38,15 @@
                 var allowedHosts = MODULE_SETTINGS.ALLOWED_HOSTS;
                 var urlElement = document.createElement('a');
                 urlElement.href = config.url;
+                var host = urlElement.host;
+                var hostname = urlElement.hostname;
 
-                if (allowedHosts.indexOf(urlElement.host) > -1 || allowedHosts.indexOf(urlElement.hostname) > -1) {
+                if (!(host || hostname)) {
+                    // IE does not set the host / hostname for relative paths
+                    host = hostname = $location.host();
+                }
+
+                if (allowedHosts.indexOf(host) > -1 || allowedHosts.indexOf(hostname) > -1) {
                     config.headers = config.headers || {};
                     var token = authFactory.getToken();
                     if (token) {
@@ -62,8 +69,11 @@
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    auth.run(['$rootScope', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
+    auth.run(['$rootScope', '$location', '$log', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $location, $log, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
         var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+        if (!MODULE_SETTINGS.ALLOWED_HOSTS.length) {
+            $log.error('ALLOWED_HOSTS is empty. Set ALLOWED_HOSTS to a list of hosts that the auth token can be sent to.');
+        }
 
         $rootScope.$on('$routeChangeStart', function (e, next, current) {
             var nextRoute = next.$$route;

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 5.3.1
+
+* Fix issue with host / hostname not being detected in IE for local paths.
+* Add error log when ALLOWED_HOSTS is empty.
+
 # 5.3.0
 
 * Added support for setting the cookie's path using COOKIE_PATH.
