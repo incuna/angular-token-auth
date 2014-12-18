@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.4.0
+
+* Add LOGOUT_REDIRECT_URL
+
 # 5.3.1
 
 * Fix issue with host / hostname not being detected in IE for local paths.
