@@ -9,6 +9,7 @@
         LOGIN: '/login/',
         LOGOUT: '/logout/',
         LOGIN_REDIRECT_URL: '/',
+        LOGOUT_REDIRECT_URL: '/logout/',
         AUTH_HEADER_PREFIX: 'Token',
         ALLOWED_HOSTS: [],
         COOKIE_PATH: null
@@ -355,7 +356,7 @@
             },
             logout: function () {
                 authFactory.clearAuth();
-                $location.url(MODULE_SETTINGS.LOGOUT);
+                $location.url(MODULE_SETTINGS.LOGOUT_REDIRECT_URL);
             }
         };
     }]);
