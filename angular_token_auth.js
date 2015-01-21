@@ -355,8 +355,17 @@
                 return deferred.promise;
             },
             logout: function () {
-                authFactory.clearAuth();
-                $location.url(MODULE_SETTINGS.LOGOUT_REDIRECT_URL);
+                var deferred = $q.defer();
+
+                $http.delete(PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT)
+                    .success(function (data) {
+                        authFactory.clearAuth();
+                        $location.url(MODULE_SETTINGS.LOGOUT_REDIRECT_URL);
+                        deferred.resolve(data);
+                    })
+                    .error(deferred.reject);
+
+                return deferred.promise;
             }
         };
     }]);
