@@ -356,12 +356,12 @@
                 var deferred = $q.defer();
 
                 $http.delete(PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT)
-                    .success(function (data) {
+                    .success(deferred.resolve)
+                    .error(deferred.reject)
+                    ['finally'](function () {
                         authFactory.clearAuth();
                         $location.url(MODULE_SETTINGS.LOGOUT_REDIRECT_URL);
-                        deferred.resolve(data);
-                    })
-                    .error(deferred.reject);
+                    });
 
                 return deferred.promise;
             }
