@@ -123,7 +123,7 @@
     //         var AppAuthLoginFormFactory = function (scope, element, attrs) {
     //             AuthLoginFormFactory.apply(this, arguments);
     //         };
-    //         AppAuthLoginFormFactory.prototype = Object.create(authLoginFormFactory.prototype); 
+    //         AppAuthLoginFormFactory.prototype = Object.create(authLoginFormFactory.prototype);
     //         AppAuthLoginFormFactory.prototype.loginFailed = function (response) {
     //              AuthLoginFormFactory.prototype.loginFailed.apply(this, arguments);
     //              // your own code here
@@ -267,7 +267,7 @@
                         var cookie = cookieArray[i];
                         var index = cookie.indexOf('=');
                         //ignore nameless cookies
-                        if (index > 0) { 
+                        if (index > 0) {
                             var name = decodeURIComponent(cookie.substring(0, index));
                             if (name === key) {
                                 var value = decodeURIComponent(cookie.substring(index + 1));
@@ -348,15 +348,22 @@
                 }).success(function (data) {
                     authFactory.setAuth(data);
                     deferred.resolve(data);
-                }).error(function (data) {
-                    deferred.reject(data);
-                });
+                }).error(deferred.reject);
 
                 return deferred.promise;
             },
             logout: function () {
-                authFactory.clearAuth();
-                $location.url(MODULE_SETTINGS.LOGOUT_REDIRECT_URL);
+                var deferred = $q.defer();
+
+                $http.delete(PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT)
+                    .success(deferred.resolve)
+                    .error(deferred.reject)
+                    ['finally'](function () {
+                        authFactory.clearAuth();
+                        $location.url(MODULE_SETTINGS.LOGOUT_REDIRECT_URL);
+                    });
+
+                return deferred.promise;
             }
         };
     }]);

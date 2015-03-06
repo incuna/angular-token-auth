@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 5.5.0
+
+* Send a DELETE request to the auth endpoint when logging out to clear the
+  session.
+
 # 5.4.0
 
 * Add LOGOUT_REDIRECT_URL
