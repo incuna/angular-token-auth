@@ -9,5 +9,5 @@
 ## Release
 * Use semver for versioning
 * Update `CHANGELOG.md`
-* Update version `bower.json`
+* Update version in `bower.json`
 * Tag release with version number
