@@ -14,9 +14,9 @@
         ALLOWED_HOSTS: [],
         COOKIE_PATH: null
         // Optional settings:
-        // STORAGE_METHOD: value
-        // value should be a string corresponding to a key of a storageMethod in 
-        //  authStorageFactory. Allowed values: localstorage, cookie
+        // STORAGE_METHOD: 'cookie'
+        // STORAGE_METHOD: 'localStorage'
+        // STORAGE_METHOD: 'noSupport'
     });
 
     auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
