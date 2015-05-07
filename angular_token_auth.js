@@ -299,7 +299,7 @@
             }
         };
 
-        if (MODULE_SETTINGS.STORAGE_METHOD && storageMethods[MODULE_SETTINGS.STORAGE_METHOD]) {
+        if (storageMethods[MODULE_SETTINGS.STORAGE_METHOD]) {
             return storageMethods[MODULE_SETTINGS.STORAGE_METHOD];
         } else {
             // Either we had no specified storage method, or we couldn't
