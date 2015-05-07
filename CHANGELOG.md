@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# 5.6.0
+
+* Add STORAGE_METHOD option which overrides the token storage type
+
 # 5.5.0
 
 * Send a DELETE request to the auth endpoint when logging out to clear the
