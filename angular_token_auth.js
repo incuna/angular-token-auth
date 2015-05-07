@@ -301,8 +301,9 @@
             }
         };
 
-        if (storageMethods[MODULE_SETTINGS.STORAGE_METHOD]) {
-            return storageMethods[MODULE_SETTINGS.STORAGE_METHOD];
+        var method = storageMethods[MODULE_SETTINGS.STORAGE_METHOD];
+        if (method && method.test()) {
+            return method;
         } else {
             // Either we had no specified storage method, or we couldn't
             //  find the requested one, so try to auto-detect
@@ -315,6 +316,7 @@
                 return storageMethods['noSupport'];
             }
         }
+        
 
     }]);
 
