@@ -12,7 +12,7 @@
         LOGOUT_REDIRECT_URL: '/logout/',
         AUTH_HEADER_PREFIX: 'Token',
         ALLOWED_HOSTS: [],
-        STORAGE_METHOD: 'auto'
+        STORAGE_METHOD: 'auto',
         COOKIE_PATH: null
     });
 
