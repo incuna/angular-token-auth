@@ -12,6 +12,7 @@
         LOGOUT_REDIRECT_URL: '/logout/',
         AUTH_HEADER_PREFIX: 'Token',
         ALLOWED_HOSTS: [],
+        STORAGE_METHOD: 'auto'
         COOKIE_PATH: null
     });
 
@@ -297,13 +298,20 @@
             }
         };
 
-        //use cookies if available, otherwise try localstorage
-        if (storageMethods['cookie'].test() === true) {
+        if (MODULE_SETTINGS.STORAGE_METHOD === 'cookie') {
             return storageMethods['cookie'];
-        } else if (storageMethods['localStorage'].test()) {
+        } else if (MODULE_SETTINGS.STORAGE_METHOD === 'localstorage') {
             return storageMethods['localStorage'];
         } else {
-            return storageMethods['noSupport'];
+            // Use the default 'auto' method for determining storage type
+            // Use cookies if available, otherwise try localstorage
+            if (storageMethods['cookie'].test() === true) {
+                return storageMethods['cookie'];
+            } else if (storageMethods['localStorage'].test()) {
+                return storageMethods['localStorage'];
+            } else {
+                return storageMethods['noSupport'];
+            }
         }
 
     }]);
