@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# 4.2.0
+* Add STORAGE_METHOD option which overrides the token storage type (Backport from 5.6.0)
+
 # 4.1.0
 * Save token to local storage as well as cookies to support cordova
 
