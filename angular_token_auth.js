@@ -11,6 +11,10 @@
         LOGIN_REDIRECT_URL: '/',
         AUTH_HEADER_PREFIX: 'Token',
         ALLOWED_HOSTS: []
+        // Optional settings:
+        // STORAGE_METHOD: 'cookie'
+        // STORAGE_METHOD: 'localStorage'
+        // STORAGE_METHOD: 'noSupport'
     });
 
     auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -137,7 +141,8 @@
         authenticationFactory.logout();
     }]);
 
-    auth.factory('tokenStorageFactory', ['$cookieStore', '$window', function ($cookieStore, $window) {
+    auth.factory('tokenStorageFactory', ['$cookieStore', '$window', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($cookieStore, $window, TOKEN_AUTH, PROJECT_SETTINGS) {
+        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
 
         var storageMethods = {
             noSupport: {
@@ -185,15 +190,21 @@
             }
         };
 
-        //use cookies if available, otherwise try localstorage
-        if (storageMethods['cookie'].test() === true) {
-            return storageMethods['cookie'];
-        } else if (storageMethods['localStorage'].test()) {
-            return storageMethods['localStorage'];
+        var method = storageMethods[MODULE_SETTINGS.STORAGE_METHOD];
+        if (method && method.test()) {
+            return method;
         } else {
-            return storageMethods['noSupport'];
+            // Either we had no specified storage method, or we couldn't
+            //  find the requested one, so try to auto-detect
+            // Use cookies if available, otherwise try localstorage
+            if (storageMethods['cookie'].test() === true) {
+                return storageMethods['cookie'];
+            } else if (storageMethods['localStorage'].test()) {
+                return storageMethods['localStorage'];
+            } else {
+                return storageMethods['noSupport'];
+            }
         }
-
     }]);
 
     auth.factory('tokenFactory', ['$rootScope', 'tokenStorageFactory', function ($rootScope, tokenStorageFactory) {
