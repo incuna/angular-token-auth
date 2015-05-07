@@ -12,8 +12,9 @@
         LOGOUT_REDIRECT_URL: '/logout/',
         AUTH_HEADER_PREFIX: 'Token',
         ALLOWED_HOSTS: [],
-        STORAGE_METHOD: 'auto',
         COOKIE_PATH: null
+        // Optional settings examples:
+        // STORAGE_METHOD: 'localstorage',
     });
 
     auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -298,12 +299,11 @@
             }
         };
 
-        if (MODULE_SETTINGS.STORAGE_METHOD === 'cookie') {
-            return storageMethods['cookie'];
-        } else if (MODULE_SETTINGS.STORAGE_METHOD === 'localstorage') {
-            return storageMethods['localStorage'];
+        if (MODULE_SETTINGS.STORAGE_METHOD && storageMethods[MODULE_SETTINGS.STORAGE_METHOD]) {
+            return storageMethods[MODULE_SETTINGS.STORAGE_METHOD];
         } else {
-            // Use the default 'auto' method for determining storage type
+            // Either we had no specified storage method, or we couldn't
+            //  find the requested one, so try to auto-detect
             // Use cookies if available, otherwise try localstorage
             if (storageMethods['cookie'].test() === true) {
                 return storageMethods['cookie'];
