@@ -13,8 +13,10 @@
         AUTH_HEADER_PREFIX: 'Token',
         ALLOWED_HOSTS: [],
         COOKIE_PATH: null
-        // Optional settings examples:
-        // STORAGE_METHOD: 'localstorage',
+        // Optional settings:
+        // STORAGE_METHOD: value
+        // value should be a string corresponding to a key of a storageMethod in 
+        //  authStorageFactory. Allowed values: localstorage, cookie
     });
 
     auth.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
