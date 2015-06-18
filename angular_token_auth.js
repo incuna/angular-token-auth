@@ -74,13 +74,16 @@
         $httpProvider.interceptors.push('authInterceptor');
     }]);
 
-    auth.run(['$rootScope', '$location', '$log', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $location, $log, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
-        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+    auth.run(['$rootScope', '$log', 'authRouteChangeStartFactory', 'authModuleSettings', function ($rootScope, $log, authRouteChangeStartFactory, MODULE_SETTINGS) {
         if (!MODULE_SETTINGS.ALLOWED_HOSTS.length) {
             $log.error('ALLOWED_HOSTS is empty. Set ALLOWED_HOSTS to a list of hosts that the auth token can be sent to.');
         }
 
-        $rootScope.$on('$routeChangeStart', function (e, next, current) {
+        $rootScope.$on('$routeChangeStart', authRouteChangeStartFactory);
+    }]);
+
+    auth.factory('authRouteChangeStartFactory', ['$location', 'authFactory', 'authModuleSettings', function ($location, authFactory, MODULE_SETTINGS) {
+        return function (e, next, current) {
             var nextRoute = next.$$route;
 
             // By default, all routes should be anonymous.
@@ -109,8 +112,7 @@
                     $location.replace();
                 }
             }
-        });
-
+        };
     }]);
 
     auth.factory('authModuleSettings', [
