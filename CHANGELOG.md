@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 5.7.0
+
+* Add authRouteChangeStartFactory so on $routeChangeStart can be changed.
+* Use 'authModuleSettings' where possible.
+
 # 5.6.0
 
 * Add STORAGE_METHOD option which overrides the token storage type
