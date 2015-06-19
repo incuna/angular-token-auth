@@ -34,9 +34,7 @@
             });
     }]);
 
-    auth.factory('authInterceptor', ['$rootScope', '$q', '$location', 'authFactory', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($rootScope, $q, $location, authFactory, TOKEN_AUTH, PROJECT_SETTINGS) {
-        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
-
+    auth.factory('authInterceptor', ['$rootScope', '$q', '$location', 'authFactory', 'authModuleSettings', function ($rootScope, $q, $location, authFactory, MODULE_SETTINGS) {
         return {
             request: function (config) {
                 // Only transform requests for hosts in the ALLOWED_HOSTS setting.
@@ -237,8 +235,7 @@
         authActionsFactory.logout();
     }]);
 
-    auth.factory('authStorageFactory', ['$window', '$browser', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($window, $browser, TOKEN_AUTH, PROJECT_SETTINGS) {
-        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+    auth.factory('authStorageFactory', ['$window', '$browser', 'authModuleSettings', function ($window, $browser, MODULE_SETTINGS) {
         var cookiePath = MODULE_SETTINGS.COOKIE_PATH ? MODULE_SETTINGS.COOKIE_PATH : $browser.baseHref();
 
         var storageMethods = {
@@ -349,9 +346,7 @@
         };
     }]);
 
-    auth.factory('authActionsFactory', ['$q', '$http', '$location', 'TOKEN_AUTH', 'PROJECT_SETTINGS', 'authFactory', function ($q, $http, $location, TOKEN_AUTH, PROJECT_SETTINGS, authFactory) {
-        var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
-
+    auth.factory('authActionsFactory', ['$q', '$http', '$location', 'PROJECT_SETTINGS', 'authModuleSettings', 'authFactory', function ($q, $http, $location, PROJECT_SETTINGS, MODULE_SETTINGS, authFactory) {
         return {
             login: function (username, password) {
                 var deferred = $q.defer();
