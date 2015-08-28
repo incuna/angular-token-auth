@@ -1,5 +1,9 @@
 # CHANGELOG
 
+# Upcoming
+
+* Add errors to login directive scope.
+
 # 5.7.0
 
 * Add authRouteChangeStartFactory so on $routeChangeStart can be changed.
