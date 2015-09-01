@@ -166,6 +166,8 @@
                     $location.url($location.search().next || authModuleSettings.LOGIN_REDIRECT_URL);
                 },
                 loginFailed: function (response) {
+                    // Store all the errors on the scope.
+                    this.scope.errors = response;
                     if (response.non_field_errors) {
                         this.scope.fields.errors = [{
                             msg: response.non_field_errors[0]
@@ -178,6 +180,7 @@
                     this.scope.status.authenticating = false;
                 },
                 loginClick: function () {
+                    delete this.scope.errors;
                     this.scope.fields.errors = '';
                     this.scope.fields.username.errors = '';
                     this.scope.fields.password.errors = '';
