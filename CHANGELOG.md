@@ -1,7 +1,5 @@
 # 5.8.0
 
-# Upcoming
-
 * Add errors to login directive scope.
 
 # 5.7.0
