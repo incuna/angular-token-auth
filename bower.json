@@ -3,7 +3,7 @@
   "version": "5.8.0",
   "main": "./angular_token_auth.js",
   "dependencies": {
-    "angular": "~1.2"
+    "angular": "1.2 - 1.5"
   },
   "homepage": "https://github.com/incuna/angular-token-auth",
   "authors": [

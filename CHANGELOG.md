@@ -1,6 +1,8 @@
-# 5.8.0
-
 # Upcoming
+
+* Upgrade Angular compatibility to include 1.3, 1.4, and 1.5
+
+# 5.8.0
 
 * Add errors to login directive scope.
 
