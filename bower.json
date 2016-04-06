@@ -1,6 +1,6 @@
 {
   "name": "angular-token-auth",
-  "version": "5.8.0",
+  "version": "5.9.0",
   "main": "./angular_token_auth.js",
   "dependencies": {
     "angular": "1.2 - 1.5"
