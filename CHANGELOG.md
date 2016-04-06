@@ -1,3 +1,7 @@
+# Upcoming
+
+* Allow angular versions between 1.2 - 1.5.
+
 # 5.8.0
 
 * Add errors to login directive scope.
