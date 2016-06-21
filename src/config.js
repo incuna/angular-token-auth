@@ -2,6 +2,7 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.route-config', [
+        'angular-token-auth.constants',
         'project_settings'
     ]);
 
