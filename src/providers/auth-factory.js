@@ -1,7 +1,9 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('angular-token-auth.auth', []);
+    var module = angular.module('angular-token-auth.auth', [
+        'angular-token-auth.auth-storage'
+    ]);
 
     module.factory('authFactory', ['$rootScope', 'authStorageFactory', function ($rootScope, authStorageFactory) {
         return {

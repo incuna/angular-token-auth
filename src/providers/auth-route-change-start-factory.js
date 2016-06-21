@@ -1,7 +1,11 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('angular-token-auth.auth-route-change-start', []);
+    var module = angular.module('angular-token-auth.auth-route-change-start', [
+        'angular-token-auth.auth',
+        'angular-token-auth.auth-module-settings',
+        'angular-token-auth.constants'
+    ]);
 
     module.factory('authRouteChangeStartFactory', [
         '$location',

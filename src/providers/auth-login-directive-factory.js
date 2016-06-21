@@ -1,7 +1,9 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('angular-token-auth.auth-login-form-directive-factory', []);
+    var module = angular.module('angular-token-auth.auth-login-form-directive-factory', [
+        'angular-token-auth.auth-login-form'
+    ]);
 
     module.factory('authLoginFormDirectiveFactory', [
         'AuthLoginFormFactory',

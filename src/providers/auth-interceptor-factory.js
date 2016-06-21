@@ -1,7 +1,10 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('angular-token-auth.auth-interceptor', []);
+    var module = angular.module('angular-token-auth.auth-interceptor', [
+        'angular-token-auth.auth',
+        'angular-token-auth.auth-module-settings'
+    ]);
 
     module.factory('authInterceptor', [
         '$rootScope',

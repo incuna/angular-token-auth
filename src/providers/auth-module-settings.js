@@ -2,7 +2,8 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth-module-settings', [
-        'project_settings'
+        'project_settings',
+        'angular-token-auth.constants'
     ]);
 
     module.factory('authModuleSettings', [

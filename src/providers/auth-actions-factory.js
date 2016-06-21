@@ -2,7 +2,9 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth-actions', [
-        'project_settings'
+        'project_settings',
+        'angular-token-auth.auth',
+        'angular-token-auth.auth-module-settings'
     ]);
 
     module.factory('authActionsFactory', [
