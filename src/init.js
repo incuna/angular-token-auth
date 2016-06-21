@@ -13,7 +13,8 @@
         'angular-token-auth.auth-module-settings',
         'angular-token-auth.auth-route-change-start',
         'angular-token-auth.auth-storage',
-        'angular-token-auth.route-config',
+        'angular-token-auth.routes',
+        'angular-token-auth.config',
         'angular-token-auth.constants'
     ]);
 
