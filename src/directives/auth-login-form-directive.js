@@ -15,11 +15,9 @@
     //         });
     //     }
     // ]);
-    console.log(module)
     module.directive('loginForm', [
         'authLoginFormDirectiveFactory',
         function (authLoginFormDirectiveFactory) {
-            console.log('s')
             return authLoginFormDirectiveFactory;
         }
     ]);
