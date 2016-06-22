@@ -43,9 +43,6 @@ module.exports = function (grunt) {
         }
     });
 
-    // Load external grunt task config.
-    grunt.loadTasks('./grunt');
-
     grunt.registerTask('default', [
         'test'
     ]);

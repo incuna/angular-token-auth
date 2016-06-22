@@ -32,7 +32,7 @@
             logout: function () {
                 var deferred = $q.defer();
 
-                $http.delete(PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT)
+                $http['delete'](PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT)
                     .success(deferred.resolve)
                     .error(deferred.reject)
                     ['finally'](function () {
