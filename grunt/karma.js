@@ -14,6 +14,8 @@ module.exports = function (grunt) {
                     // Angular libraries.
                     '<%= config.lib %>/angular/angular.js',
                     '<%= config.lib %>/angular-mocks/angular-mocks.js',
+                    '<%= config.lib %>/angular-route/angular-route.js',
+                    '<%= config.files.karmaMocks %>',
 
                     // Init files first, if any, to register modules.
                     '<%= config.modules %>/**/init.js',

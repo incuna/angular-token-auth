@@ -20,10 +20,12 @@ module.exports = function (grunt) {
             files: {
                 lint: [
                     'src/**/*.js',
+                    '<%= config.files.karmaMocks %>',
                     '<%= config.files.karmaTests %>',
                     './grunt/**/*.js',
                     'Gruntfile.js'
                 ],
+                karmaMocks: 'tests/mocks/**/*.js',
                 karmaTests: 'tests/unit/**/*.js'
             }
         },
