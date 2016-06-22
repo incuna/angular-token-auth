@@ -1,7 +1,7 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('angular-token-auth.auth-login-form', []);
+    var module = angular.module('angular-token-auth.auth-login-form-factory', []);
 
     // extend this in your app using:
     // auth.factory('AppAuthLoginFormFactory', [
