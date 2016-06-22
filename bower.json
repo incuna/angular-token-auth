@@ -11,6 +11,10 @@
     "Anna Powell-Smith <anna@darkgreener.com>",
     "Graham Gilchrist <opensource@grahamgilchrist.com>"
   ],
+  "devDependencies": {
+    "angular-mocks": "1.2 - 1.5",
+    "jquery": "2.x"
+  },
   "license": "MIT",
   "ignore": [
     "**/.*",

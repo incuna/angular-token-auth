@@ -13,12 +13,12 @@ module.exports = function (grunt) {
 
                     // Angular libraries.
                     '<%= config.lib %>/angular/angular.js',
+                    '<%= config.lib %>/angular-mocks/angular-mocks.js',
 
                     // Init files first, if any, to register modules.
                     '<%= config.modules %>/**/init.js',
                     '<%= config.modules %>/**/*.js',
                     '<%= config.files.karmaTests %>'
-                    // 'tests/unit/dashboard/**/*'
                 ],
                 exclude: [],
                 frameworks: ['jasmine'],
