@@ -1,6 +1,9 @@
 # Upcoming
 
 * BREAKING CHANGE: Seperate the code from the angular_token_auth into seperate files.
+* Add file linting.
+* Add Angular-route dependency 1.2 - 1.5.
+* Add Angular-mocks dependency 1.2 - 1.5.
 
 ## 5.9.0
 

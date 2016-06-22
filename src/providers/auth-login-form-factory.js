@@ -51,11 +51,15 @@
                 loginFailed: function (response) {
                     // Store all the errors on the scope.
                     this.scope.errors = response;
+                    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
+                    /* jshint camelcase: false  */
                     if (response.non_field_errors) {
                         this.scope.fields.errors = [{
                             msg: response.non_field_errors[0]
                         }];
                     }
+                    /* jshint camelcase: true */
+                    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
                     this.scope.fields.username.errors = response.username ? response.username[0] : '';
                     this.scope.fields.password.errors = response.password ? response.password[0] : '';
                 },
@@ -77,7 +81,7 @@
                         )
                         ['finally'](angular.bind(this, this.loginFinally));
                 }
-            }
+            };
 
             return AuthLoginFormFactory;
         }
