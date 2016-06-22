@@ -4,6 +4,7 @@
 * Add file linting.
 * Add Angular-route dependency 1.2 - 1.5.
 * Add Angular-mocks dependency 1.2 - 1.5.
+* Add build task to create a minified file and a concatenated file.
 
 ## 5.9.0
 

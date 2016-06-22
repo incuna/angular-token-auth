@@ -13,6 +13,23 @@ module.exports = function (grunt) {
 
     require('time-grunt')(grunt);
 
+    var concatConfig = {
+        dist: {
+            src: [
+                'src/**/*.js'
+            ],
+            dest: 'dist/angular-token-auth.js'
+        }
+    };
+
+    var uglifyConfig = {
+        dist: {
+            files: {
+                'dist/angular-token-auth.min.js': 'dist/angular-token-auth.js'
+            }
+        }
+    };
+
     grunt.initConfig({
         config: {
             lib: 'bower_components',
@@ -42,7 +59,9 @@ module.exports = function (grunt) {
                 config: '.jscsrc'
             },
             src: '<%= config.files.lint %>'
-        }
+        },
+        concat: concatConfig,
+        uglify: uglifyConfig
     });
 
     // Load external grunt task config.
@@ -50,6 +69,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'test'
+    ]);
+
+    grunt.registerTask('build', 'Concat and uglify', [
+        'concat',
+        'uglify'
     ]);
 
     grunt.registerTask('lint', 'Run the JS linters.', [
