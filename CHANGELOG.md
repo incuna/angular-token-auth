@@ -1,6 +1,7 @@
 # Upcoming
 
 * BREAKING CHANGE: Seperate the code from the angular_token_auth into seperate files.
+* Add file linting.
 
 ## 5.9.0
 
