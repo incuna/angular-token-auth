@@ -1,10 +1,10 @@
 # Upcoming
 
 * BREAKING CHANGE: Seperate the code from the angular_token_auth into seperate files.
-* Add file linting.
 * Add Angular-route dependency 1.2 - 1.5.
 * Add Angular-mocks dependency 1.2 - 1.5.
 * Add build task to create a minified file and a concatenated file.
+* Add file linting using eslint version 18.1.0. https://github.com/sindresorhus/grunt-eslint.
 
 ## 5.9.0
 
