@@ -46,13 +46,13 @@ module.exports = function (grunt) {
                 karmaTests: 'tests/unit/**/*.js'
             }
         },
-        jshint: {
-            options: {
-                jshintrc: '.jshintrc'
-            },
-            all: [
-                '<%= config.files.lint %>'
-            ]
+        eslint: {
+            all: {
+                options: {
+                    config: 'eslint.json'
+                },
+                src: '<%= config.files.lint %>'
+            }
         },
         jscs: {
             options: {
@@ -77,7 +77,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('lint', 'Run the JS linters.', [
-        'jshint',
+        'eslint',
         'jscs'
     ]);
 
