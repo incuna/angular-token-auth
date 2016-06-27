@@ -5,6 +5,8 @@
 * Add Angular-mocks dependency 1.2 - 1.5.
 * Add build task to create a minified file and a concatenated file.
 * Add file linting using eslint version 18.1.0. https://github.com/sindresorhus/grunt-eslint.
+* Provide a basic default login template.
+* Add watch task to recompile dist files.
 
 ## 5.9.0
 

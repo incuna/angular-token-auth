@@ -1,12 +1,33 @@
 /* jshint node: true */
 
+var _ = require('lodash');
+var fs = require('fs');
+
 module.exports = function (grunt) {
     'use strict';
+
+    var projectTemplates = {};
+
+    var modules_dir = 'src/';
+    var modules = fs.readdirSync(modules_dir).filter(function (file) {
+        return fs.statSync(modules_dir + file).isDirectory();
+    });
+
+    console.log(modules)
+
+     _.each(modules, function (name) {
+        projectTemplates[name] = {
+            cwd: 'src/' + name,
+            src: '**/*.html',
+            dest: 'src/templates.js'
+        };
+    });
 
     if (grunt.option('help')) {
         require('load-grunt-tasks')(grunt);
     } else {
         require('jit-grunt')(grunt, {
+            ngtemplates: 'grunt-angular-templates',
             force: 'grunt-force-task'
         });
     }
@@ -43,7 +64,19 @@ module.exports = function (grunt) {
                     'Gruntfile.js'
                 ],
                 karmaMocks: 'tests/mocks/**/*.js',
-                karmaTests: 'tests/unit/**/*.js'
+                karmaTests: 'tests/unit/**/*.js',
+                templatesJS: 'src/**/templates.js',
+                templatesHTML: 'src/**/*.html'
+            }
+        },
+        watch: {
+        templates: {
+                files: 'src/**/*.html',
+                tasks: 'ngtemplates'
+            },
+            scripts: {
+                files: 'src/**/scripts/**/*.js',
+                tasks: ['build', 'eslint']
             }
         },
         eslint: {
@@ -60,6 +93,21 @@ module.exports = function (grunt) {
             },
             src: '<%= config.files.lint %>'
         },
+        ngtemplates: _.extend({
+                options: {
+                    htmlmin: {
+                        collapseBooleanAttributes: true,
+                        collapseWhitespace: true,
+                        removeAttributeQuotes: true,
+                        removeComments: true,
+                        removeEmptyAttributes: true,
+                        removeScriptTypeAttributes: true,
+                        removeStyleLinkTypeAttributes: true
+                    }
+                }
+            },
+            projectTemplates
+        ),
         concat: concatConfig,
         uglify: uglifyConfig
     });
@@ -72,6 +120,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', 'Concat and uglify', [
+        'ngtemplates',
         'concat',
         'uglify'
     ]);
