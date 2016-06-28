@@ -1,19 +1,9 @@
 {
-    "browser": true,
-    "camelcase": true,
-    "curly": true,
-    "eqeqeq": true,
-    "es3": true,
-    "immed": true,
-    "indent": 4,
-    "latedef": "nofunc",
-    "newcap": true,
-    "noarg": true,
-    "quotmark": true,
-    "strict": true,
-    "sub": true,
-    "trailing": true,
-    "undef": "vars",
-    "unused": "vars",
-    "white": true
+    "rules": {
+        "eqeqeq": "error",
+        "camelcase": error,
+        "curly": error,
+        "no-trailing-spaces": error,
+        "quotes": ["error", "single"]
+    }
 }
