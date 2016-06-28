@@ -12,7 +12,7 @@
         'authFactory',
         'authModuleSettings',
         function ($location, authFactory, MODULE_SETTINGS) {
-        return function (e, next, current) {
+        return function (e, next) {
             var nextRoute = next.$$route;
 
             // By default, all routes should be anonymous.

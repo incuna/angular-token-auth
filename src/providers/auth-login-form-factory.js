@@ -26,7 +26,7 @@
                 $location.url(authModuleSettings.LOGIN_REDIRECT_URL);
             }
 
-            var AuthLoginFormFactory = function (scope, element, attrs) {
+            var AuthLoginFormFactory = function (scope) {
                 this.scope = scope;
                 this.init();
             };
@@ -45,7 +45,7 @@
 
                     this.scope.login = angular.bind(this, this.loginClick);
                 },
-                loginSuccess: function (response) {
+                loginSuccess: function () {
                     $location.url($location.search().next || authModuleSettings.LOGIN_REDIRECT_URL);
                 },
                 loginFailed: function (response) {
@@ -63,7 +63,7 @@
                     this.scope.fields.username.errors = response.username ? response.username[0] : '';
                     this.scope.fields.password.errors = response.password ? response.password[0] : '';
                 },
-                loginFinally: function (response) {
+                loginFinally: function () {
                     this.scope.status.authenticating = false;
                 },
                 loginClick: function () {
