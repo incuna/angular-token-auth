@@ -14,7 +14,8 @@
         "strict": error,
         "no-unused-vars": warn,
         "quotes": [
-            "error", "single",
+            "error",
+            "single",
             {"avoidEscape": true}
         ]
     }
