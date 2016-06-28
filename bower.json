@@ -3,7 +3,8 @@
   "version": "5.9.0",
   "main": "./angular_token_auth.js",
   "dependencies": {
-    "angular": "1.2 - 1.5"
+    "angular": "1.2 - 1.5",
+    "angular-route": "1.2 - 1.5"
   },
   "homepage": "https://github.com/incuna/angular-token-auth",
   "authors": [
@@ -11,6 +12,9 @@
     "Anna Powell-Smith <anna@darkgreener.com>",
     "Graham Gilchrist <opensource@grahamgilchrist.com>"
   ],
+  "devDependencies": {
+    "angular-mocks": "1.2 - 1.5"
+  },
   "license": "MIT",
   "ignore": [
     "**/.*",
