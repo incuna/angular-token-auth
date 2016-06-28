@@ -1,4 +1,4 @@
-# Upcoming
+# 6.0.0
 
 * BREAKING CHANGE: Seperate the code from the angular_token_auth into seperate files.
 * Add Angular-route dependency 1.2 - 1.5.
