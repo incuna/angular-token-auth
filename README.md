@@ -6,8 +6,14 @@
 1. Add a `PROJECT_SETTINGS` constant to your `project_settings` module.
 1. Define a list of allowed hosts in `PROJECT_SETTINGS.TOKEN_AUTH.ALLOWED_HOSTS`.
 
-## Release
-* Use semver for versioning
-* Update `CHANGELOG.md`
-* Update version in `bower.json`
-* Tag release with version number
+## Releasing a new version
+
+1. Commit your changes.
+1. Run `grunt build` to generate the compiled template files
+1. Follow the guidelines at http://semver.org/ to determine your new version number.
+1. Update `CHANGELOG.md` with your new version number and a description of changes.
+1. Update the `version` property in `bower.json` and|or `package.json`
+1. Commit those changes with the commit message "Bump to [version number]". [version number] should be in the format x.y.z.
+1. `git tag [version number]`
+1. `git push`
+1. `git push --tags` - must be done separately.
