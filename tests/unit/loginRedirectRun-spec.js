@@ -34,7 +34,7 @@
                 this.$route = $route;
             });
 
-            this.triggerRouteChange = (eventName) => {
+            this.triggerRouteChange = function (eventName) {
                 this.$rootScope.$broadcast(eventName, {
                     $$route: {}
                 });

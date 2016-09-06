@@ -5,9 +5,11 @@
 
     'use strict';
 
-     describe('getTokenAuthSettings', function () {
+    describe('getTokenAuthSettings', function () {
 
         beforeEach(function () {
+            var self = this;
+
             this.PROJECT_SETTINGS_MOCK = {
                 API_HOST: '',
                 TOKEN_AUTH: {
@@ -21,13 +23,11 @@
             // angular-token-auth requires ngRoute but doesn't have it as a dep.
             module('ngRoute');
             module('angular-token-auth');
-            module([
-                '$provide',
-                ($provide) => {
-                    $provide.constant('PROJECT_SETTINGS', this.PROJECT_SETTINGS_MOCK);
-                    $provide.constant('TOKEN_AUTH', this.TOKEN_AUTH_MOCK);
-                }
-            ]);
+
+            module(function ($provide) {
+                $provide.constant('PROJECT_SETTINGS', self.PROJECT_SETTINGS_MOCK);
+                $provide.constant('TOKEN_AUTH', self.TOKEN_AUTH_MOCK);
+            });
 
             module('angular-token-auth-login-redirect-token-auth-settings');
 
