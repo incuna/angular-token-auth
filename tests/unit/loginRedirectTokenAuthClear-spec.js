@@ -1,5 +1,4 @@
-/* jshint es3: false, esnext: true */
-/* global angular, jasmine, beforeEach, describe, expect, module, it, inject, spyOn */
+/* global beforeEach, describe, expect, module, it, inject, spyOn */
 
 (function () {
 
@@ -138,4 +137,4 @@
 
     });
 
-})();
+}());

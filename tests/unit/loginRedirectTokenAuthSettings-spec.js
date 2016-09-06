@@ -1,5 +1,4 @@
-/* jshint es3: false, esnext: true */
-/* global jasmine, beforeEach, describe, expect, module, it, inject */
+/* global beforeEach, describe, expect, module, it, inject */
 
 (function () {
 
@@ -68,4 +67,4 @@
         });
     });
 
-})();
+}());
