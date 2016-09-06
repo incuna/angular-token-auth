@@ -20,10 +20,12 @@
             });
 
             this.routeIsAnonymous = function (route) {
-                if (!route) {
-                    return false;
+                // By default, all routes should be anonymous.
+                var routeIsAnonymous = true;
+                if (route && route.anonymous === false) {
+                    routeIsAnonymous = false;
                 }
-                return route.anonymous;
+                return routeIsAnonymous;
             };
 
             this.redirect = function () {

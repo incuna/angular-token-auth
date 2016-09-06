@@ -56,7 +56,6 @@
             describe('routeIsAnonymous method', function () {
 
                 beforeEach(function () {
-                    var self = this;
 
                     // Routes are anonymous unless told not to be.
                     this.anonymousRoute = {};
@@ -67,11 +66,11 @@
                 });
 
                 it('should return false for a non-anonymous route', function () {
-                    expect(this.onTokenAuthClear.routeIsAnonymous(self.nonAnonymousRoute)).toBe(false);
+                    expect(this.onTokenAuthClear.routeIsAnonymous(this.nonAnonymousRoute)).toBe(false);
                 });
 
                 it('should return true for an anonymous route', function () {
-                    expect(this.onTokenAuthClear.routeIsAnonymous(self.anonymousRoute)).toBe(true);
+                    expect(this.onTokenAuthClear.routeIsAnonymous(this.anonymousRoute)).toBe(true);
                 });
 
             });
