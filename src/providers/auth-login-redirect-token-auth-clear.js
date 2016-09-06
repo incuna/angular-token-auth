@@ -20,7 +20,6 @@
             });
 
             this.routeIsAnonymous = function (route) {
-                // By default, all routes should be anonymous.
                 if (!route) {
                     return false;
                 }
