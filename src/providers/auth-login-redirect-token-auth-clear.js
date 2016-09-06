@@ -21,11 +21,10 @@
 
             this.routeIsAnonymous = function (route) {
                 // By default, all routes should be anonymous.
-                var routeIsAnonymous = true;
-                if (route && route.anonymous === false) {
-                    routeIsAnonymous = false;
+                if (!route) {
+                    return false;
                 }
-                return routeIsAnonymous;
+                return route.anonymous;
             };
 
             this.redirect = function () {

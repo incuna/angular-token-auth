@@ -53,28 +53,6 @@
 
             });
 
-            describe('routeIsAnonymous method', function () {
-
-                beforeEach(function () {
-
-                    // Routes are anonymous unless told not to be.
-                    this.anonymousRoute = {};
-                    this.nonAnonymousRoute = {
-                        anonymous: false
-                    };
-
-                });
-
-                it('should return false for a non-anonymous route', function () {
-                    expect(this.onTokenAuthClear.routeIsAnonymous(this.nonAnonymousRoute)).toBe(false);
-                });
-
-                it('should return true for an anonymous route', function () {
-                    expect(this.onTokenAuthClear.routeIsAnonymous(this.anonymousRoute)).toBe(true);
-                });
-
-            });
-
             describe('redirect method', function () {
 
                 beforeEach(function () {
@@ -85,8 +63,6 @@
                         this.$location = $location;
                     });
                     this.$location.url('/current/');
-
-                    // Run.
                     this.onTokenAuthClear.redirect();
 
                 });
