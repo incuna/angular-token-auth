@@ -53,6 +53,29 @@
 
             });
 
+            describe('routeIsAnonymous method', function () {
+
+                beforeEach(function () {
+                    var self = this;
+
+                    // Routes are anonymous unless told not to be.
+                    this.anonymousRoute = {};
+                    this.nonAnonymousRoute = {
+                        anonymous: false
+                    };
+
+                });
+
+                it('should return false for a non-anonymous route', function () {
+                    expect(this.onTokenAuthClear.routeIsAnonymous(self.nonAnonymousRoute)).toBe(false);
+                });
+
+                it('should return true for an anonymous route', function () {
+                    expect(this.onTokenAuthClear.routeIsAnonymous(self.anonymousRoute)).toBe(true);
+                });
+
+            });
+
             describe('redirect method', function () {
 
                 beforeEach(function () {
@@ -63,11 +86,10 @@
                         this.$location = $location;
                     });
                     this.$location.url('/current/');
-                    this.onTokenAuthClear.redirect();
-
                 });
 
                 it('should change the url to TOKEN_AUTH.LOGOUT_REDIRECT_URL with the next param set to the current path', function () {
+                    this.onTokenAuthClear.redirect();
                     expect(this.$location.path()).toBe('/');
                     expect(this.$location.search()).toEqual({
                         'show-login': true,
