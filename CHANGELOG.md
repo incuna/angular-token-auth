@@ -1,3 +1,7 @@
+## 6.1.0
+
+* Redirect user to logged out page when their session expires.
+
 # 6.0.0
 
 * BREAKING CHANGE: Seperate the code from the angular_token_auth into seperate files.

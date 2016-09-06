@@ -108,7 +108,10 @@
         'angular-token-auth.routes',
         'angular-token-auth.config',
         'angular-token-auth.constants',
-        'angular-token-auth.auth-login-form-factory'
+        'angular-token-auth.auth-login-form-factory',
+        'angular-token-auth-login-redirect',
+        'angular-token-auth-login-redirect-token-auth-clear',
+        'angular-token-auth-login-redirect-token-auth-settings'
     ]);
 
 }(window.angular));
@@ -274,7 +277,9 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('angular-token-auth.auth-login-form-factory', []);
+    var module = angular.module('angular-token-auth.auth-login-form-factory', [
+        'ngRoute'
+    ]);
 
     // extend this in your app using:
     // auth.factory('AppAuthLoginFormFactory', [
@@ -299,7 +304,7 @@
                 $location.url(authModuleSettings.LOGIN_REDIRECT_URL);
             }
 
-            var AuthLoginFormFactory = function (scope, element, attrs) {
+            var AuthLoginFormFactory = function (scope) {
                 this.scope = scope;
                 this.init();
             };
@@ -318,7 +323,7 @@
 
                     this.scope.login = angular.bind(this, this.loginClick);
                 },
-                loginSuccess: function (response) {
+                loginSuccess: function () {
                     $location.url($location.search().next || authModuleSettings.LOGIN_REDIRECT_URL);
                 },
                 loginFailed: function (response) {
@@ -336,7 +341,7 @@
                     this.scope.fields.username.errors = response.username ? response.username[0] : '';
                     this.scope.fields.password.errors = response.password ? response.password[0] : '';
                 },
-                loginFinally: function (response) {
+                loginFinally: function () {
                     this.scope.status.authenticating = false;
                 },
                 loginClick: function () {
@@ -357,6 +362,124 @@
             };
 
             return AuthLoginFormFactory;
+        }
+    ]);
+
+}(window.angular));
+
+(function (angular) {
+    'use strict';
+
+    /*
+    Use this module for consistent redirection regarding the login form.
+    Whenever the user's session expires or they try to access a non-anonymous
+    page when logged out, they will be redirected to the url set in
+    TOKEN_AUTH.LOGOUT_REDIRECT_URL, either in the angular-token-auth defaults
+    or your own PROJECT_SETTINGS.
+    To use this module, require login-redirect as an app dependency, then
+    require loginRedirect.run and call it in your app's run block.
+    Example:
+        var app = angular.module('app', [
+            'login-redirect'
+        ]);
+        module.run([
+            'loginRedirect.run',
+            function (loginRedirectRun) {
+                loginRedirectRun();
+            }
+        ]);
+    Or manually add the $routeChangeStart and tokenAuth:clear handlers yourself:
+    simply follow the loginRedirect.run function.
+    */
+
+    var module = angular.module('angular-token-auth-login-redirect', [
+        // For $routeChangeStart event
+        'ngRoute',
+        'angular-token-auth-login-redirect-token-auth-clear',
+        'angular-token-auth.auth-route-change-start'
+    ]);
+
+    module.factory('authLoginRedirect.run', [
+        '$rootScope',
+        'authRouteChangeStartFactory',
+        'authLoginRedirect.onTokenAuthClear',
+        function ($rootScope, authRouteChangeStartFactory, onTokenAuthClear) {
+
+            return function loginRedirectRun () {
+                $rootScope.$on('$routeChangeStart', authRouteChangeStartFactory);
+                $rootScope.$on('tokenAuth:clear', onTokenAuthClear.handler);
+            };
+
+        }
+    ]);
+
+}(window.angular));
+
+(function (angular) {
+    'use strict';
+
+    var module = angular.module('angular-token-auth-login-redirect-token-auth-clear', [
+        // For $route
+        'ngRoute',
+        'angular-token-auth-login-redirect-token-auth-settings'
+    ]);
+
+    module.service('authLoginRedirect.onTokenAuthClear', [
+        '$route',
+        '$location',
+        'authLoginRedirect.getTokenAuthSettings',
+        function ($route, $location, getTokenAuthSettings) {
+
+            this.handler = angular.bind(this, function onTokenAuthClear () {
+                if (!this.routeIsAnonymous($route.current.$$route)) {
+                    this.redirect();
+                }
+            });
+
+            this.routeIsAnonymous = function (route) {
+                // By default, all routes should be anonymous.
+                var routeIsAnonymous = true;
+                if (route && route.anonymous === false) {
+                    routeIsAnonymous = false;
+                }
+                return routeIsAnonymous;
+            };
+
+            this.redirect = function () {
+                var TOKEN_AUTH = getTokenAuthSettings();
+                // Current route is not anonymous so use the logout redirect
+                var nextUrl = $location.path();
+                // Use $location.url() to reset all search params, then set
+                // the next= param.
+                $location.url(TOKEN_AUTH.LOGOUT_REDIRECT_URL).search('next', nextUrl);
+            };
+
+        }
+    ]);
+
+}(window.angular));
+
+(function (angular) {
+    'use strict';
+
+    var module = angular.module('angular-token-auth-login-redirect-token-auth-settings', [
+        'project_settings',
+        'angular-token-auth.constants'
+    ]);
+
+    module.factory('authLoginRedirect.getTokenAuthSettings', [
+        'PROJECT_SETTINGS',
+        'TOKEN_AUTH',
+        function (PROJECT_SETTINGS, TOKEN_AUTH) {
+
+            return function getTokenAuthSettings (key) {
+                var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
+                if (key) {
+                    return MODULE_SETTINGS[key];
+                } else {
+                    return MODULE_SETTINGS;
+                }
+            };
         }
     ]);
 
@@ -393,7 +516,7 @@
         'authFactory',
         'authModuleSettings',
         function ($location, authFactory, MODULE_SETTINGS) {
-        return function (e, next, current) {
+        return function (e, next) {
             var nextRoute = next.$$route;
 
             // By default, all routes should be anonymous.

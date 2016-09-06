@@ -18,7 +18,6 @@
         'angular-token-auth.constants',
         'angular-token-auth.auth-login-form-factory',
         'angular-token-auth-login-redirect',
-        'angular-token-auth-login-redirect-route-change-start',
         'angular-token-auth-login-redirect-token-auth-clear',
         'angular-token-auth-login-redirect-token-auth-settings'
     ]);

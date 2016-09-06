@@ -26,18 +26,18 @@
     var module = angular.module('angular-token-auth-login-redirect', [
         // For $routeChangeStart event
         'ngRoute',
-        'angular-token-auth-login-redirect-route-change-start',
-        'angular-token-auth-login-redirect-token-auth-clear'
+        'angular-token-auth-login-redirect-token-auth-clear',
+        'angular-token-auth.auth-route-change-start'
     ]);
 
     module.factory('authLoginRedirect.run', [
         '$rootScope',
-        'authLoginRedirect.onRouteChangeStart',
+        'authRouteChangeStartFactory',
         'authLoginRedirect.onTokenAuthClear',
-        function ($rootScope, onRouteChangeStart, onTokenAuthClear) {
+        function ($rootScope, authRouteChangeStartFactory, onTokenAuthClear) {
 
             return function loginRedirectRun () {
-                $rootScope.$on('$routeChangeStart', onRouteChangeStart.handler);
+                $rootScope.$on('$routeChangeStart', authRouteChangeStartFactory);
                 $rootScope.$on('tokenAuth:clear', onTokenAuthClear.handler);
             };
 
