@@ -32,6 +32,17 @@ module.exports = function (grunt) {
         },
     };
 
+    var watchConfig = {
+        lint: {
+            files: ['<%= config.files.lint %>'],
+            tasks: ['lint'],
+        },
+        build: {
+            files: ['src/**/*.js'],
+            tasks: ['build'],
+        },
+    };
+
     grunt.initConfig({
         config: {
             lib: 'bower_components',
@@ -58,6 +69,7 @@ module.exports = function (grunt) {
         },
         concat: concatConfig,
         uglify: uglifyConfig,
+        watch: watchConfig,
     });
 
     // Load external grunt task config.
