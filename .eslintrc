@@ -1,22 +1,22 @@
 {
+    "extends": [
+        "incuna"
+    ],
     "env": {
-        "browser": true
+        "node": true
     },
     "rules": {
-        "eqeqeq": "error",
-        "camelcase": error,
-        "curly": error,
-        "no-trailing-spaces": error,
-        "wrap-iife": error,
-        "no-use-before-define": error,
-        "new-cap": error,
-        "no-caller": error,
-        "strict": error,
-        "no-unused-vars": warn,
-        "quotes": [
-            "error",
-            "single",
-            {"avoidEscape": true}
+        "camelcase": "error",
+        "object-curly-newline": [
+            "error", {
+                "ObjectExpression": {
+                    "minProperties": 1,
+                    "multiline": true
+                },
+                "ObjectPattern": {
+                    "multiline": true
+                }
+            }
         ]
     }
 }

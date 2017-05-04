@@ -4,7 +4,7 @@
     var module = angular.module('angular-token-auth-login-redirect-token-auth-clear', [
         // For $route
         'ngRoute',
-        'angular-token-auth-login-redirect-token-auth-settings'
+        'angular-token-auth-login-redirect-token-auth-settings',
     ]);
 
     module.service('authLoginRedirect.onTokenAuthClear', [
@@ -37,7 +37,7 @@
                 $location.url(TOKEN_AUTH.LOGOUT_REDIRECT_URL).search('next', nextUrl);
             };
 
-        }
+        },
     ]);
 
 }(window.angular));

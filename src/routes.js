@@ -4,7 +4,7 @@
     var module = angular.module('angular-token-auth.routes', [
         'angular-token-auth.constants',
         'project_settings',
-        'ngRoute'
+        'ngRoute',
     ]);
 
     module.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -14,11 +14,11 @@
             .when(MODULE_SETTINGS.LOGIN, {
                 templateUrl: 'templates/auth/login.html',
                 controller: 'LoginCtrl',
-                anonymousOnly: true
+                anonymousOnly: true,
             })
             .when(MODULE_SETTINGS.LOGOUT, {
                 templateUrl: 'templates/auth/logout.html',
-                controller: 'LogoutCtrl'
+                controller: 'LogoutCtrl',
             });
     }]);
 

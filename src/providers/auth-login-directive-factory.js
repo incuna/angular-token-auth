@@ -2,7 +2,7 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth-login-form-directive-factory', [
-        'angular-token-auth.auth-login-form'
+        'angular-token-auth.auth-login-form',
     ]);
 
     module.factory('authLoginFormDirectiveFactory', [
@@ -14,9 +14,9 @@
                 templateUrl: 'templates/auth/login_form.html',
                 link: function (scope, element, attrs) {
                     new AuthLoginFormFactory(scope, element, attrs);
-                }
+                },
             };
-        }
+        },
     ]);
 
 }(window.angular));

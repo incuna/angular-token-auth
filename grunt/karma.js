@@ -1,7 +1,6 @@
-/* jshint node: true */
+'use strict';
 
 module.exports = function (grunt) {
-    'use strict';
 
     grunt.config.merge({
         karma: {
@@ -20,7 +19,7 @@ module.exports = function (grunt) {
                     // Init files first, if any, to register modules.
                     '<%= config.modules %>/**/init.js',
                     '<%= config.modules %>/**/*.js',
-                    '<%= config.files.karmaTests %>'
+                    '<%= config.files.karmaTests %>',
                 ],
                 exclude: [],
                 frameworks: ['jasmine'],
@@ -30,22 +29,22 @@ module.exports = function (grunt) {
                     'karma-spec-reporter',
                     'karma-chrome-launcher',
                     'karma-firefox-launcher',
-                    'karma-safari-launcher'
+                    'karma-safari-launcher',
                 ],
                 preprocessors: {
                     '<%= config.files.templatesHTML %>': 'ng-html2js',
-                    '<%= config.files.scripts %>': 'coverage'
+                    '<%= config.files.scripts %>': 'coverage',
                 },
                 reporters: ['dots', 'coverage'],
                 coverageReporter: {
                     dir: 'coverage',
-                    type: 'lcov'
+                    type: 'lcov',
                 },
                 port: 9876,
                 colors: true,
                 browsers: ['Chrome', 'Firefox', 'Safari'],
                 singleRun: true,
-                logLevel: 'INFO'
+                logLevel: 'INFO',
             },
             ci: {
                 // Travis only allows Firefox.
@@ -55,19 +54,19 @@ module.exports = function (grunt) {
                     type: 'lcovonly',
                     // Travis uses this path: coverage/lcov.info
                     subdir: '.',
-                    file: 'lcov.info'
+                    file: 'lcov.info',
                 },
-                logLevel: 'WARN'
+                logLevel: 'WARN',
             },
             dev: {
-                reporters: ['dots', 'coverage']
+                reporters: ['dots', 'coverage'],
             },
             verbose: {
-                reporters: ['spec', 'coverage']
+                reporters: ['spec', 'coverage'],
             },
             debug: {
                 reporters: ['spec', 'coverage'],
-                logLevel: 'DEBUG'
+                logLevel: 'DEBUG',
             },
             watch: {
                 // One browser to be quicker.
@@ -76,9 +75,9 @@ module.exports = function (grunt) {
                 autoWatch: true,
                 singleRun: false,
                 // INFO level logs when a file is changed: better feedback.
-                logLevel: 'INFO'
-            }
-        }
+                logLevel: 'INFO',
+            },
+        },
     });
 
 };

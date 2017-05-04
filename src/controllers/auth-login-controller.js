@@ -3,6 +3,7 @@
 
     var module = angular.module('angular-token-auth.auth-login', []);
 
-    module.controller('LoginCtrl', [function () {}]);
+    // Fill this in the project.
+    module.controller('LoginCtrl', [angular.noop]);
 
 }(window.angular));

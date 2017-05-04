@@ -2,7 +2,7 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth', [
-        'angular-token-auth.auth-storage'
+        'angular-token-auth.auth-storage',
     ]);
 
     module.factory('authFactory', ['$rootScope', 'authStorageFactory', function ($rootScope, authStorageFactory) {
@@ -28,7 +28,7 @@
             clearAuth: function () {
                 authStorageFactory.clear('auth');
                 $rootScope.$broadcast('tokenAuth:clear');
-            }
+            },
         };
     }]);
 

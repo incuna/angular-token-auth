@@ -3,7 +3,7 @@
 
     var module = angular.module('angular-token-auth.config', [
         'angular-token-auth.constants',
-        'project_settings'
+        'project_settings',
     ]);
 
     module.config(['$httpProvider', function ($httpProvider) {

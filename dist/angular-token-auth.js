@@ -3,7 +3,7 @@
 
     var module = angular.module('angular-token-auth.config', [
         'angular-token-auth.constants',
-        'project_settings'
+        'project_settings',
     ]);
 
     module.config(['$httpProvider', function ($httpProvider) {
@@ -33,7 +33,7 @@
         LOGOUT_REDIRECT_URL: '/logout/',
         AUTH_HEADER_PREFIX: 'Token',
         ALLOWED_HOSTS: [],
-        COOKIE_PATH: null
+        COOKIE_PATH: null,
         // Optional settings:
         // STORAGE_METHOD: 'cookie'
         // STORAGE_METHOD: 'localStorage'
@@ -47,7 +47,8 @@
 
     var module = angular.module('angular-token-auth.auth-login', []);
 
-    module.controller('LoginCtrl', [function () {}]);
+    // Fill this in the project.
+    module.controller('LoginCtrl', [angular.noop]);
 
 }(window.angular));
 
@@ -55,7 +56,7 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth-logout', [
-        'angular-token-auth.auth-actions'
+        'angular-token-auth.auth-actions',
     ]);
 
     module.controller('LogoutCtrl', ['authActionsFactory', function (authActionsFactory) {
@@ -67,7 +68,7 @@
 (function (angular) {
     'use strict';
     var module = angular.module('angular-token-auth.auth-login-form', [
-        'angular-token-auth.auth-login-form-directive-factory'
+        'angular-token-auth.auth-login-form-directive-factory',
     ]);
 
     // extend this in your app by doing:
@@ -85,7 +86,7 @@
         'authLoginFormDirectiveFactory',
         function (authLoginFormDirectiveFactory) {
             return authLoginFormDirectiveFactory;
-        }
+        },
     ]);
 
 }(window.angular));
@@ -111,7 +112,7 @@
         'angular-token-auth.auth-login-form-factory',
         'angular-token-auth-login-redirect',
         'angular-token-auth-login-redirect-token-auth-clear',
-        'angular-token-auth-login-redirect-token-auth-settings'
+        'angular-token-auth-login-redirect-token-auth-settings',
     ]);
 
 }(window.angular));
@@ -122,7 +123,7 @@
     var module = angular.module('angular-token-auth.auth-actions', [
         'project_settings',
         'angular-token-auth.auth',
-        'angular-token-auth.auth-module-settings'
+        'angular-token-auth.auth-module-settings',
     ]);
 
     module.factory('authActionsFactory', [
@@ -133,35 +134,37 @@
         'authModuleSettings',
         'authFactory',
         function ($q, $http, $location, PROJECT_SETTINGS, MODULE_SETTINGS, authFactory) {
-        return {
-            login: function (username, password) {
-                var deferred = $q.defer();
+            return {
+                login: function (username, password) {
+                    var deferred = $q.defer();
 
-                $http.post(PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT, {
-                    username: username,
-                    password: password
-                }).success(function (data) {
-                    authFactory.setAuth(data);
-                    deferred.resolve(data);
-                }).error(deferred.reject);
+                    $http.post(PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT, {
+                        username: username,
+                        password: password,
+                    }).success(function (data) {
+                        authFactory.setAuth(data);
+                        deferred.resolve(data);
+                    }).error(deferred.reject);
 
-                return deferred.promise;
-            },
-            logout: function () {
-                var deferred = $q.defer();
+                    return deferred.promise;
+                },
+                logout: function () {
+                    var deferred = $q.defer();
 
-                $http['delete'](PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT)
-                    .success(deferred.resolve)
-                    .error(deferred.reject)
-                    ['finally'](function () {
-                        authFactory.clearAuth();
-                        $location.url(MODULE_SETTINGS.LOGOUT_REDIRECT_URL);
-                    });
+                    /* eslint-disable dot-notation, no-unexpected-multiline */
+                    $http['delete'](PROJECT_SETTINGS.API_ROOT + MODULE_SETTINGS.ENDPOINT)
+                        .success(deferred.resolve)
+                        .error(deferred.reject)
+                        ['finally'](function () {
+                            authFactory.clearAuth();
+                            $location.url(MODULE_SETTINGS.LOGOUT_REDIRECT_URL);
+                        });
+                    /* eslint-enable dot-notation, no-unexpected-multiline */
 
-                return deferred.promise;
-            }
-        };
-    }]);
+                    return deferred.promise;
+                },
+            };
+        }]);
 
 }(window.angular));
 
@@ -169,7 +172,7 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth', [
-        'angular-token-auth.auth-storage'
+        'angular-token-auth.auth-storage',
     ]);
 
     module.factory('authFactory', ['$rootScope', 'authStorageFactory', function ($rootScope, authStorageFactory) {
@@ -195,7 +198,7 @@
             clearAuth: function () {
                 authStorageFactory.clear('auth');
                 $rootScope.$broadcast('tokenAuth:clear');
-            }
+            },
         };
     }]);
 
@@ -206,7 +209,7 @@
 
     var module = angular.module('angular-token-auth.auth-interceptor', [
         'angular-token-auth.auth',
-        'angular-token-auth.auth-module-settings'
+        'angular-token-auth.auth-module-settings',
     ]);
 
     module.factory('authInterceptor', [
@@ -216,38 +219,38 @@
         'authFactory',
         'authModuleSettings',
         function ($rootScope, $q, $location, authFactory, MODULE_SETTINGS) {
-        return {
-            request: function (config) {
-                // Only transform requests for hosts in the ALLOWED_HOSTS setting.
-                var allowedHosts = MODULE_SETTINGS.ALLOWED_HOSTS;
-                var urlElement = document.createElement('a');
-                urlElement.href = config.url;
-                var host = urlElement.host;
-                var hostname = urlElement.hostname;
+            return {
+                request: function (config) {
+                    // Only transform requests for hosts in the ALLOWED_HOSTS setting.
+                    var allowedHosts = MODULE_SETTINGS.ALLOWED_HOSTS;
+                    var urlElement = document.createElement('a');
+                    urlElement.href = config.url;
+                    var host = urlElement.host;
+                    var hostname = urlElement.hostname;
 
-                if (!(host || hostname)) {
-                    // IE does not set the host / hostname for relative paths
-                    host = hostname = $location.host();
-                }
-
-                if (allowedHosts.indexOf(host) > -1 || allowedHosts.indexOf(hostname) > -1) {
-                    config.headers = config.headers || {};
-                    var token = authFactory.getToken();
-                    if (token) {
-                        config.headers.Authorization = MODULE_SETTINGS.AUTH_HEADER_PREFIX + ' ' + token;
+                    if (!(host || hostname)) {
+                        // IE does not set the host / hostname for relative paths
+                        host = hostname = $location.host();
                     }
-                }
 
-                return config;
-            },
-            responseError: function (response) {
-                if (response.status === 401) {
-                    authFactory.clearAuth();
-                }
-                return $q.reject(response);
-            }
-        };
-    }]);
+                    if (allowedHosts.indexOf(host) > -1 || allowedHosts.indexOf(hostname) > -1) {
+                        config.headers = config.headers || {};
+                        var token = authFactory.getToken();
+                        if (token) {
+                            config.headers.Authorization = MODULE_SETTINGS.AUTH_HEADER_PREFIX + ' ' + token;
+                        }
+                    }
+
+                    return config;
+                },
+                responseError: function (response) {
+                    if (response.status === 401) {
+                        authFactory.clearAuth();
+                    }
+                    return $q.reject(response);
+                },
+            };
+        }]);
 
 }(window.angular));
 
@@ -255,7 +258,7 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth-login-form-directive-factory', [
-        'angular-token-auth.auth-login-form'
+        'angular-token-auth.auth-login-form',
     ]);
 
     module.factory('authLoginFormDirectiveFactory', [
@@ -267,9 +270,9 @@
                 templateUrl: 'templates/auth/login_form.html',
                 link: function (scope, element, attrs) {
                     new AuthLoginFormFactory(scope, element, attrs);
-                }
+                },
             };
-        }
+        },
     ]);
 
 }(window.angular));
@@ -278,7 +281,7 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth-login-form-factory', [
-        'ngRoute'
+        'ngRoute',
     ]);
 
     // extend this in your app using:
@@ -314,11 +317,11 @@
                     this.scope.status = {};
                     this.scope.fields = {
                         username: {
-                            required: true
+                            required: true,
                         },
                         password: {
-                            required: true
-                        }
+                            required: true,
+                        },
                     };
 
                     this.scope.login = angular.bind(this, this.loginClick);
@@ -329,15 +332,11 @@
                 loginFailed: function (response) {
                     // Store all the errors on the scope.
                     this.scope.errors = response;
-                    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-                    /* jshint camelcase: false  */
                     if (response.non_field_errors) {
                         this.scope.fields.errors = [{
-                            msg: response.non_field_errors[0]
+                            msg: response.non_field_errors[0],
                         }];
                     }
-                    /* jshint camelcase: true */
-                    // jscs:enable requireCamelCaseOrUpperCaseIdentifiers
                     this.scope.fields.username.errors = response.username ? response.username[0] : '';
                     this.scope.fields.password.errors = response.password ? response.password[0] : '';
                 },
@@ -357,12 +356,14 @@
                             angular.bind(this, this.loginSuccess),
                             angular.bind(this, this.loginFailed)
                         )
+                        /* eslint-disable dot-notation, no-unexpected-multiline */
                         ['finally'](angular.bind(this, this.loginFinally));
-                }
+                        /* eslint-enable dot-notation, no-unexpected-multiline */
+                },
             };
 
             return AuthLoginFormFactory;
-        }
+        },
     ]);
 
 }(window.angular));
@@ -396,7 +397,7 @@
         // For $routeChangeStart event
         'ngRoute',
         'angular-token-auth-login-redirect-token-auth-clear',
-        'angular-token-auth.auth-route-change-start'
+        'angular-token-auth.auth-route-change-start',
     ]);
 
     module.factory('authLoginRedirect.run', [
@@ -410,7 +411,7 @@
                 $rootScope.$on('tokenAuth:clear', onTokenAuthClear.handler);
             };
 
-        }
+        },
     ]);
 
 }(window.angular));
@@ -421,7 +422,7 @@
     var module = angular.module('angular-token-auth-login-redirect-token-auth-clear', [
         // For $route
         'ngRoute',
-        'angular-token-auth-login-redirect-token-auth-settings'
+        'angular-token-auth-login-redirect-token-auth-settings',
     ]);
 
     module.service('authLoginRedirect.onTokenAuthClear', [
@@ -454,7 +455,7 @@
                 $location.url(TOKEN_AUTH.LOGOUT_REDIRECT_URL).search('next', nextUrl);
             };
 
-        }
+        },
     ]);
 
 }(window.angular));
@@ -464,7 +465,7 @@
 
     var module = angular.module('angular-token-auth-login-redirect-token-auth-settings', [
         'project_settings',
-        'angular-token-auth.constants'
+        'angular-token-auth.constants',
     ]);
 
     module.factory('authLoginRedirect.getTokenAuthSettings', [
@@ -476,11 +477,11 @@
                 var MODULE_SETTINGS = angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
                 if (key) {
                     return MODULE_SETTINGS[key];
-                } else {
-                    return MODULE_SETTINGS;
                 }
+                return MODULE_SETTINGS;
+
             };
-        }
+        },
     ]);
 
 }(window.angular));
@@ -490,14 +491,14 @@
 
     var module = angular.module('angular-token-auth.auth-module-settings', [
         'project_settings',
-        'angular-token-auth.constants'
+        'angular-token-auth.constants',
     ]);
 
     module.factory('authModuleSettings', [
         'TOKEN_AUTH', 'PROJECT_SETTINGS',
         function (TOKEN_AUTH, PROJECT_SETTINGS) {
             return angular.extend({}, TOKEN_AUTH, PROJECT_SETTINGS.TOKEN_AUTH);
-        }
+        },
     ]);
 
 }(window.angular));
@@ -508,7 +509,7 @@
     var module = angular.module('angular-token-auth.auth-route-change-start', [
         'angular-token-auth.auth',
         'angular-token-auth.auth-module-settings',
-        'angular-token-auth.constants'
+        'angular-token-auth.constants',
     ]);
 
     module.factory('authRouteChangeStartFactory', [
@@ -516,37 +517,37 @@
         'authFactory',
         'authModuleSettings',
         function ($location, authFactory, MODULE_SETTINGS) {
-        return function (e, next) {
-            var nextRoute = next.$$route;
+            return function (e, next) {
+                var nextRoute = next.$$route;
 
-            // By default, all routes should be anonymous.
-            var nextRouteIsAnonymous = true;
-            if (angular.isDefined(nextRoute) && nextRoute.anonymous === false) {
-                nextRouteIsAnonymous = false;
-            }
-
-            var nextRouteAnonymousOnly = false;
-            if (angular.isDefined(nextRoute) && nextRoute.anonymousOnly === true) {
-                nextRouteAnonymousOnly = true;
-            }
-
-            if (authFactory.getToken()) {
-                // If the next route is public only and we are logged in then redirect to the
-                // login redirect URL.
-                if (nextRouteAnonymousOnly) {
-                    $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
+                // By default, all routes should be anonymous.
+                var nextRouteIsAnonymous = true;
+                if (angular.isDefined(nextRoute) && nextRoute.anonymous === false) {
+                    nextRouteIsAnonymous = false;
                 }
-            } else {
-                // If the next route isn't anonymous and a token doesn't exist,
-                // redirect to the log in page with a `next` parameter set to the
-                // anonymous path.
-                if (!nextRouteIsAnonymous) {
-                    $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
-                    $location.replace();
+
+                var nextRouteAnonymousOnly = false;
+                if (angular.isDefined(nextRoute) && nextRoute.anonymousOnly === true) {
+                    nextRouteAnonymousOnly = true;
                 }
-            }
-        };
-    }]);
+
+                if (authFactory.getToken()) {
+                    // If the next route is public only and we are logged in then redirect to the
+                    // login redirect URL.
+                    if (nextRouteAnonymousOnly) {
+                        $location.url(MODULE_SETTINGS.LOGIN_REDIRECT_URL);
+                    }
+                } else {
+                    // If the next route isn't anonymous and a token doesn't exist,
+                    // redirect to the log in page with a `next` parameter set to the
+                    // anonymous path.
+                    if (!nextRouteIsAnonymous) {
+                        $location.url(MODULE_SETTINGS.LOGIN + '?next=' + $location.path());
+                        $location.replace();
+                    }
+                }
+            };
+        }]);
 
 }(window.angular));
 
@@ -562,9 +563,9 @@
             noSupport: {
                 // No supported storage methods, but we have to return empty functions so the
                 //  interface doesn't break
-                set: function () {},
-                get: function () {},
-                clear: function () {}
+                set: angular.noop,
+                get: angular.noop,
+                clear: angular.noop,
             },
             cookie: {
                 // Not using angular $cookieStore because it does not support setting a path.
@@ -602,7 +603,7 @@
                 clear: function (key) {
                     // delete cookie by setting old expiry date
                     $window.document.cookie = encodeURIComponent(key) + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
-                }
+                },
             },
             localStorage: {
                 test: function () {
@@ -616,25 +617,24 @@
                 },
                 clear: function (key) {
                     $window.localStorage.removeItem(key);
-                }
-            }
+                },
+            },
         };
 
         var method = storageMethods[MODULE_SETTINGS.STORAGE_METHOD];
         if (method && method.test()) {
             return method;
-        } else {
-            // Either we had no specified storage method, or we couldn't
-            //  find the requested one, so try to auto-detect
-            // Use cookies if available, otherwise try localstorage
-            if (storageMethods.cookie.test() === true) {
-                return storageMethods.cookie;
-            } else if (storageMethods.localStorage.test()) {
-                return storageMethods.localStorage;
-            } else {
-                return storageMethods.noSupport;
-            }
         }
+        // Either we had no specified storage method, or we couldn't
+        //  find the requested one, so try to auto-detect
+        // Use cookies if available, otherwise try localstorage
+        if (storageMethods.cookie.test() === true) {
+            return storageMethods.cookie;
+        } else if (storageMethods.localStorage.test()) {
+            return storageMethods.localStorage;
+        }
+        return storageMethods.noSupport;
+
 
     }]);
 
@@ -646,7 +646,7 @@
     var module = angular.module('angular-token-auth.routes', [
         'angular-token-auth.constants',
         'project_settings',
-        'ngRoute'
+        'ngRoute',
     ]);
 
     module.config(['$routeProvider', 'TOKEN_AUTH', 'PROJECT_SETTINGS', function ($routeProvider, TOKEN_AUTH, PROJECT_SETTINGS) {
@@ -656,11 +656,11 @@
             .when(MODULE_SETTINGS.LOGIN, {
                 templateUrl: 'templates/auth/login.html',
                 controller: 'LoginCtrl',
-                anonymousOnly: true
+                anonymousOnly: true,
             })
             .when(MODULE_SETTINGS.LOGOUT, {
                 templateUrl: 'templates/auth/logout.html',
-                controller: 'LogoutCtrl'
+                controller: 'LogoutCtrl',
             });
     }]);
 

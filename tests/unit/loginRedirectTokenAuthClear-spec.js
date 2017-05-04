@@ -1,8 +1,8 @@
 /* global beforeEach, describe, expect, module, it, inject, spyOn */
 
-(function () {
+'use strict';
 
-    'use strict';
+(function () {
 
     describe('login-redirect.services', function () {
 
@@ -12,8 +12,8 @@
             this.PROJECT_SETTINGS_MOCK = {
                 API_HOST: '',
                 TOKEN_AUTH: {
-                    ALLOWED_HOSTS: []
-                }
+                    ALLOWED_HOSTS: [],
+                },
             };
 
             this.TOKEN_AUTH_MOCK = {};
@@ -37,18 +37,18 @@
 
                 this.$routeMock = {
                     current: {
-                        $$route: {}
-                    }
+                        $$route: {},
+                    },
                 };
                 module({
-                    $route: this.$routeMock
+                    $route: this.$routeMock,
                 });
 
                 inject([
                     'authLoginRedirect.onTokenAuthClear',
                     function (onTokenAuthClear) {
                         this.onTokenAuthClear = onTokenAuthClear;
-                    }
+                    },
                 ]);
 
             });
@@ -60,7 +60,7 @@
                     // Routes are anonymous unless told not to be.
                     this.anonymousRoute = {};
                     this.nonAnonymousRoute = {
-                        anonymous: false
+                        anonymous: false,
                     };
 
                 });
@@ -92,7 +92,7 @@
                     expect(this.$location.path()).toBe('/');
                     expect(this.$location.search()).toEqual({
                         'show-login': true,
-                        next: '/current/'
+                        next: '/current/',
                     });
                 });
 
