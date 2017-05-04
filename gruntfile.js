@@ -23,6 +23,9 @@ module.exports = function (grunt) {
 
     var uglifyConfig = {
         dist: {
+            options: {
+                screwIE8: false,
+            },
             files: {
                 'dist/angular-token-auth.min.js': 'dist/angular-token-auth.js',
             },
