@@ -32,7 +32,6 @@ module.exports = function (grunt) {
                     'karma-safari-launcher',
                 ],
                 preprocessors: {
-                    '<%= config.files.templatesHTML %>': 'ng-html2js',
                     '<%= config.files.scripts %>': 'coverage',
                 },
                 reporters: ['dots', 'coverage'],
