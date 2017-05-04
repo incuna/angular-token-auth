@@ -4,7 +4,7 @@
 
 (function () {
 
-    describe('getTokenAuthSettings', function () {
+    describe('auth-login-redirect-token-auth-settings', function () {
 
         beforeEach(function () {
             var self = this;
