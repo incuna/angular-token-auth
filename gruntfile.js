@@ -15,7 +15,7 @@ module.exports = function (grunt) {
     var concatConfig = {
         dist: {
             src: [
-                'src/**/*.js',
+                '<%= config.files.src $>',
             ],
             dest: 'dist/angular-token-auth.js',
         },
@@ -38,7 +38,7 @@ module.exports = function (grunt) {
             tasks: ['lint'],
         },
         build: {
-            files: ['src/**/*.js'],
+            files: ['<%= config.files.src $>'],
             tasks: ['build'],
         },
     };
@@ -48,8 +48,9 @@ module.exports = function (grunt) {
             lib: 'bower_components',
             modules: 'src',
             files: {
+                src: 'src/**/*.js',
                 lint: [
-                    'src/**/*.js',
+                    '<%= config.files.src $>',
                     '<%= config.files.karmaMocks %>',
                     '<%= config.files.karmaTests %>',
                     './grunt/**/*.js',
