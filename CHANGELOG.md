@@ -1,3 +1,7 @@
+# Upcoming
+
+* Empty functions `function () {}` replaced by `angular.noop`
+
 ## 6.1.0
 
 * Redirect user to logged out page when their session expires.
