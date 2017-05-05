@@ -14,10 +14,12 @@ module.exports = function (grunt) {
 
     var concatConfig = {
         dist: {
-            src: [
-                '<%= config.files.src $>',
-            ],
-            dest: 'dist/angular-token-auth.js',
+            files: [{
+                src: [
+                    '<%= config.files.src %>',
+                ],
+                dest: 'dist/angular-token-auth.js',
+            }],
         },
     };
 
@@ -38,7 +40,7 @@ module.exports = function (grunt) {
             tasks: ['lint'],
         },
         build: {
-            files: ['<%= config.files.src $>'],
+            files: ['<%= config.files.src %>'],
             tasks: ['build'],
         },
     };
@@ -50,7 +52,7 @@ module.exports = function (grunt) {
             files: {
                 src: 'src/**/*.js',
                 lint: [
-                    '<%= config.files.src $>',
+                    '<%= config.files.src %>',
                     '<%= config.files.karmaMocks %>',
                     '<%= config.files.karmaTests %>',
                     './grunt/**/*.js',
