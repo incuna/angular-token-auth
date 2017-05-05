@@ -1,8 +1,8 @@
 /* global jasmine, beforeEach, describe, expect, module, it, inject */
 
-(function () {
+'use strict';
 
-    'use strict';
+(function () {
 
     describe('login-redirect', function () {
 
@@ -11,8 +11,8 @@
             this.PROJECT_SETTINGS_MOCK = {
                 API_HOST: '',
                 TOKEN_AUTH: {
-                    ALLOWED_HOSTS: []
-                }
+                    ALLOWED_HOSTS: [],
+                },
             };
 
             this.TOKEN_AUTH_MOCK = {};
@@ -20,11 +20,11 @@
             module('angular-token-auth-login-redirect');
 
             this.onTokenAuthClearMock = jasmine.createSpyObj('onTokenAuthClearMock', [
-                'handler'
+                'handler',
             ]);
 
             module({
-                'authLoginRedirect.onTokenAuthClear': this.onTokenAuthClearMock
+                'authLoginRedirect.onTokenAuthClear': this.onTokenAuthClearMock,
             });
 
             inject(function ($rootScope, $location, $route) {
@@ -35,7 +35,7 @@
 
             this.triggerRouteChange = function (eventName) {
                 this.$rootScope.$broadcast(eventName, {
-                    $$route: {}
+                    $$route: {},
                 });
             };
 
@@ -43,7 +43,7 @@
                 'authLoginRedirect.run',
                 function (loginRedirectRun) {
                     this.loginRedirectRun = loginRedirectRun;
-                }
+                },
             ]);
 
             this.loginRedirectRun();

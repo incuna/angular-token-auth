@@ -1,8 +1,8 @@
 /* global beforeEach, describe, expect, module, it, inject */
 
-(function () {
+'use strict';
 
-    'use strict';
+(function () {
 
     describe('getTokenAuthSettings', function () {
 
@@ -12,8 +12,8 @@
             this.PROJECT_SETTINGS_MOCK = {
                 API_HOST: '',
                 TOKEN_AUTH: {
-                    ALLOWED_HOSTS: []
-                }
+                    ALLOWED_HOSTS: [],
+                },
             };
 
             this.TOKEN_AUTH_MOCK = {};
@@ -34,7 +34,7 @@
                 'authLoginRedirect.getTokenAuthSettings',
                 function (getTokenAuthSettings) {
                     this.getTokenAuthSettings = getTokenAuthSettings;
-                }
+                },
             ]);
 
             this.TOKEN_AUTH_MOCK.FOO = 'foo default';

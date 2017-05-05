@@ -1,11 +1,12 @@
+'use strict';
+
 module.exports = function (grunt) {
-    'use strict';
 
     if (grunt.option('help')) {
         require('load-grunt-tasks')(grunt);
     } else {
         require('jit-grunt')(grunt, {
-            force: 'grunt-force-task'
+            force: 'grunt-force-task',
         });
     }
 
@@ -14,18 +15,18 @@ module.exports = function (grunt) {
     var concatConfig = {
         dist: {
             src: [
-                'src/**/*.js'
+                'src/**/*.js',
             ],
-            dest: 'dist/angular-token-auth.js'
-        }
+            dest: 'dist/angular-token-auth.js',
+        },
     };
 
     var uglifyConfig = {
         dist: {
             files: {
-                'dist/angular-token-auth.min.js': 'dist/angular-token-auth.js'
-            }
-        }
+                'dist/angular-token-auth.min.js': 'dist/angular-token-auth.js',
+            },
+        },
     };
 
     grunt.initConfig({
@@ -38,45 +39,38 @@ module.exports = function (grunt) {
                     '<%= config.files.karmaMocks %>',
                     '<%= config.files.karmaTests %>',
                     './grunt/**/*.js',
-                    'Gruntfile.js'
+                    'Gruntfile.js',
                 ],
                 karmaMocks: 'tests/mocks/**/*.js',
-                karmaTests: 'tests/unit/**/*.js'
-            }
+                karmaTests: 'tests/unit/**/*.js',
+            },
         },
         eslint: {
             all: {
                 options: {
-                    config: '.eslintrc'
+                    config: '.eslintrc',
                 },
-                src: '<%= config.files.lint %>'
-            }
-        },
-        jscs: {
-            options: {
-                config: '.jscsrc'
+                src: '<%= config.files.lint %>',
             },
-            src: '<%= config.files.lint %>'
         },
         concat: concatConfig,
-        uglify: uglifyConfig
+        uglify: uglifyConfig,
     });
 
     // Load external grunt task config.
     grunt.loadTasks('./grunt');
 
     grunt.registerTask('default', [
-        'test'
+        'test',
     ]);
 
     grunt.registerTask('build', 'Concat and uglify', [
         'concat',
-        'uglify'
+        'uglify',
     ]);
 
     grunt.registerTask('lint', 'Run the JS linters.', [
         'eslint',
-        'jscs'
     ]);
 
     grunt.registerTask('test', 'Run the tests.', function (env) {
@@ -90,12 +84,12 @@ module.exports = function (grunt) {
         grunt.task.run([
             'force:lint',
             'force:karma:' + karmaTarget,
-            'errorcodes'
+            'errorcodes',
         ]);
     });
 
     grunt.registerTask('travis', 'Run the tests in Travis', [
-        'test:travis'
+        'test:travis',
     ]);
 
     // This is used in combination with grunt-force-task to make the most of a

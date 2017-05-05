@@ -1,8 +1,7 @@
-/* global beforeEach, module, inject, describe, it, expect */
+'use strict';
 
 (function () {
 
-    'use strict';
 
     describe('Module angular-token-auth', function () {
 
@@ -12,6 +11,7 @@
         beforeEach(function () {
 
             // Inject dependencies. module() can no longer be called after this.
+            /* eslint-disable no-unused-vars */
             inject(function ($rootScope) {
                 // Inject something to create the injector.
                 // Uncomment this line if you are having test troubles. The

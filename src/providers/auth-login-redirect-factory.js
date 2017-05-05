@@ -27,7 +27,7 @@
         // For $routeChangeStart event
         'ngRoute',
         'angular-token-auth-login-redirect-token-auth-clear',
-        'angular-token-auth.auth-route-change-start'
+        'angular-token-auth.auth-route-change-start',
     ]);
 
     module.factory('authLoginRedirect.run', [
@@ -41,7 +41,7 @@
                 $rootScope.$on('tokenAuth:clear', onTokenAuthClear.handler);
             };
 
-        }
+        },
     ]);
 
 }(window.angular));

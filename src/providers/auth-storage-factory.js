@@ -10,9 +10,9 @@
             noSupport: {
                 // No supported storage methods, but we have to return empty functions so the
                 //  interface doesn't break
-                set: function () {},
-                get: function () {},
-                clear: function () {}
+                set: angular.noop,
+                get: angular.noop,
+                clear: angular.noop,
             },
             cookie: {
                 // Not using angular $cookieStore because it does not support setting a path.
@@ -50,7 +50,7 @@
                 clear: function (key) {
                     // delete cookie by setting old expiry date
                     $window.document.cookie = encodeURIComponent(key) + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
-                }
+                },
             },
             localStorage: {
                 test: function () {
@@ -64,25 +64,24 @@
                 },
                 clear: function (key) {
                     $window.localStorage.removeItem(key);
-                }
-            }
+                },
+            },
         };
 
         var method = storageMethods[MODULE_SETTINGS.STORAGE_METHOD];
         if (method && method.test()) {
             return method;
-        } else {
-            // Either we had no specified storage method, or we couldn't
-            //  find the requested one, so try to auto-detect
-            // Use cookies if available, otherwise try localstorage
-            if (storageMethods.cookie.test() === true) {
-                return storageMethods.cookie;
-            } else if (storageMethods.localStorage.test()) {
-                return storageMethods.localStorage;
-            } else {
-                return storageMethods.noSupport;
-            }
         }
+        // Either we had no specified storage method, or we couldn't
+        //  find the requested one, so try to auto-detect
+        // Use cookies if available, otherwise try localstorage
+        if (storageMethods.cookie.test() === true) {
+            return storageMethods.cookie;
+        } else if (storageMethods.localStorage.test()) {
+            return storageMethods.localStorage;
+        }
+        return storageMethods.noSupport;
+
 
     }]);
 
