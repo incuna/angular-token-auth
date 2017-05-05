@@ -1,6 +1,5 @@
-'use strict';
-
 (function () {
+    'use strict';
 
 
     describe('Module angular-token-auth', function () {

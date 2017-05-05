@@ -1,8 +1,5 @@
-/* global beforeEach, describe, expect, module, it, inject */
-
-'use strict';
-
 (function () {
+    'use strict';
 
     describe('auth-login-redirect-token-auth-settings', function () {
 
