@@ -31,8 +31,13 @@ before_script:
 
 script:
     - grunt travis
-    # Fail if dist has not been compiled
-    - grunt build && git diff-index --quiet HEAD -- dist
+    # Fail if dist has not been compiled:
+    # - compile the dist
+    - grunt build
+    # - show a diff if it's there
+    - git diff dist/
+    # - programmatically check presence of dist changes: it will exit 1 if found
+    - git diff-index --quiet HEAD -- dist/
 
 after_success:
     # Print coverage in Travis log
