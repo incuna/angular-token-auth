@@ -22,6 +22,4 @@
 
 - `npm install -g js-beautify`
 - `git config diff.minjs.textconv js-beautify`
-- Put the following in `.gitattributes`:
-    + `*.min.js diff=minjs`
 - `git diff dist/angular-token-auth.min.js`
