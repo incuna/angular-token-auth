@@ -2,30 +2,35 @@
     'use strict';
 
     var expectModuleToHaveInjectable = function (moduleName, depName, depType) {
-        var result = {};
+        var getDirectiveAttributeFromName = function (name) {
+            return name.replace(/([A-Z])/g, function (upperCaseChar) {
+                return '-' + upperCaseChar.toLowerCase();
+            });
+        };
+
+        var injectorFn;
+        if (depType === 'factory' || depType === 'service') {
+            injectorFn = [depName, angular.noop];
+        } else if (depType === 'controller') {
+            injectorFn = function ($controller) {
+                $controller(depName);
+            };
+        } else if (depType === 'directive') {
+            injectorFn = function ($compile, $rootScope) {
+                $compile('<div ' + getDirectiveAttributeFromName(depName) + '></div>')($rootScope);
+            };
+        }
 
         var threw = false;
         var thrown = null;
         try {
-            if (depType === 'factory' || depType === 'service') {
-                inject([depName, function () {}]); // eslint-disable-line no-empty-function
-            } else if (depType === 'controller') {
-                inject(function ($controller) {
-                    $controller(depName);
-                });
-            } else if (depType === 'directive') {
-                var directiveName = depName.replace(/([A-Z])/g, function (uppercaseChar) {
-                    return '-' + uppercaseChar.toLowerCase();
-                });
-                inject(function ($compile, $rootScope) {
-                    $compile('<div ' + directiveName + '></div>')($rootScope);
-                });
-            }
+            inject(injectorFn);
         } catch (error) {
             threw = true;
             thrown = error;
         }
 
+        var result = {};
         if (threw) {
             result.pass = false;
             result.message = ['Expected', moduleName, 'to have injectable', depType, depName, 'but it threw', jasmine.pp(thrown)].join(' ');
@@ -72,6 +77,41 @@
 
         beforeEach(function () {
             jasmine.addMatchers(matchers);
+        });
+
+        // Test the matchers for expected failure.
+        describe('expected failure', function () {
+
+            beforeEach(function () {
+                angular.module('missing-deps', [])
+                    .factory('factory', function (missingInjectable) {
+                        return missingInjectable;
+                    })
+                    .service('service', function (missingInjectable) {
+                        return missingInjectable;
+                    })
+                    .controller('controller', function (missingInjectable) {
+                        this.foo = missingInjectable;
+                    })
+                    .directive('directive', function (missingInjectable) {
+                        return {
+                            link: function (scope) {
+                                scope.foo = missingInjectable;
+                            },
+                        };
+                    });
+                module('missing-deps');
+            });
+
+            describe('for module missing-deps', function () {
+                it('should error when injected', function () {
+                    expect('missing-deps').not.toHaveInjectableFactory('factory');
+                    expect('missing-deps').not.toHaveInjectableService('service');
+                    expect('missing-deps').not.toHaveInjectableController('controller');
+                    expect('missing-deps').not.toHaveInjectableDirective('directive');
+                });
+            });
+
         });
 
         // Load each module and inject all registered services/factories to
