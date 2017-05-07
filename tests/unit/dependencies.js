@@ -88,30 +88,9 @@
             jasmine.addMatchers(matchers);
         });
 
-        var modules = [
-            'angular-token-auth.constants',
-            'angular-token-auth.config',
-            'angular-token-auth.auth-login',
-            'angular-token-auth.auth-logout',
-            'angular-token-auth.auth-login-form',
-            'angular-token-auth',
-            'angular-token-auth.auth',
-            'angular-token-auth.auth-actions',
-            'angular-token-auth.auth-login-form-directive-factory',
-            'angular-token-auth.auth-interceptor',
-            'angular-token-auth.auth-login-form-factory',
-            'angular-token-auth-login-redirect',
-            'angular-token-auth-login-redirect-token-auth-clear',
-            'angular-token-auth-login-redirect-token-auth-settings',
-            'angular-token-auth.auth-module-settings',
-            'angular-token-auth.auth-route-change-start',
-            'angular-token-auth.routes',
-            'angular-token-auth.auth-storage',
-        ];
-
         // Load each module and inject all registered services/factories to
         // uncover those using dependencies they haven't listed in the module.
-        modules.forEach(function (moduleName) {
+        angular.registeredModules.forEach(function (moduleName) {
             describe('for module ' + moduleName, function () {
 
                 beforeEach(function () {
