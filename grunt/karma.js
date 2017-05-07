@@ -43,6 +43,11 @@ module.exports = function (grunt) {
                 browsers: ['Chrome', 'Firefox', 'Safari'],
                 singleRun: true,
                 logLevel: 'INFO',
+                client: {
+                    jasmine: {
+                        random: true,
+                    },
+                },
             },
             ci: {
                 // Travis only allows Firefox.
