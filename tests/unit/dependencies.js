@@ -7,7 +7,7 @@
         var threw = false;
         var thrown = null;
         try {
-            if (['service', 'factory', 'constant', 'value'].indexOf(depType) !== -1) {
+            if (depType === 'factory' || depType === 'service') {
                 inject([depName, function () {}]); // eslint-disable-line no-empty-function
             } else if (depType === 'controller') {
                 inject(function ($controller) {
@@ -38,20 +38,6 @@
     };
 
     var matchers = {
-        toHaveInjectableValue: function () {
-            return {
-                compare: function (moduleName, depName) {
-                    return expectModuleToHaveInjectable(moduleName, depName, 'value');
-                },
-            };
-        },
-        toHaveInjectableConstant: function () {
-            return {
-                compare: function (moduleName, depName) {
-                    return expectModuleToHaveInjectable(moduleName, depName, 'constant');
-                },
-            };
-        },
         toHaveInjectableFactory: function () {
             return {
                 compare: function (moduleName, depName) {
@@ -111,20 +97,22 @@
                         } else if (depType === '$compileProvider') {
                             expect(moduleName).toHaveInjectableDirective(depName);
                         } else if (depType === '$provide') {
-                            if (registrationMethod === 'value') {
-                                expect(moduleName).toHaveInjectableValue(depName);
-                            } else if (registrationMethod === 'constant') {
-                                expect(moduleName).toHaveInjectableConstant(depName);
-                            } else if (registrationMethod === 'service') {
+                            if (registrationMethod === 'service') {
                                 expect(moduleName).toHaveInjectableService(depName);
                             } else if (registrationMethod === 'factory') {
                                 expect(moduleName).toHaveInjectableFactory(depName);
                             } else {
-                                shouldFail = true;
+                                if (registrationMethod === 'value' || registrationMethod === 'constant') {
+                                    // Pass: values and constants can't have
+                                    // dependencies so there's nothing to test.
+                                } else {
+                                    shouldFail = true;
+                                }
                             }
                         } else {
                             shouldFail = true;
                         }
+
                         if (shouldFail) {
                             fail(moduleName + ' has unmatchable provider: ' + jasmine.pp([depType, registrationMethod, depName]));
                         }
