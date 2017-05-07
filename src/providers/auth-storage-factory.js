@@ -1,7 +1,9 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('angular-token-auth.auth-storage', []);
+    var module = angular.module('angular-token-auth.auth-storage', [
+        'angular-token-auth.auth-module-settings',
+    ]);
 
     module.factory('authStorageFactory', ['$window', '$browser', 'authModuleSettings', function ($window, $browser, MODULE_SETTINGS) {
         var cookiePath = MODULE_SETTINGS.COOKIE_PATH ? MODULE_SETTINGS.COOKIE_PATH : $browser.baseHref();
