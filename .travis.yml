@@ -35,16 +35,9 @@ script:
     # - compile the dist
     - grunt build
     # - programmatically check presence of dist changes: it will exit 1 if found
-    - git diff-index --quiet HEAD -- dist/
-    # - show a diff if it's there
-    - git diff --stat dist/
-    - git diff dist/
-    # - show beautified minified dist
-    - echo "====================="
-    - echo "Minified dist changes"
-    - echo "====================="
-    - git config diff.minjs.textconv js-beautify
-    - git diff dist/
+    - git diff --stat --exit-code -- dist/
+    # - show beautified minified dist if it's there
+    - git config diff.minjs.textconv js-beautify && git diff --exit-code dist/
 
 after_success:
     # Print coverage in Travis log
