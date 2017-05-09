@@ -14,18 +14,34 @@ module.exports = function (grunt) {
 
     var concatConfig = {
         dist: {
-            src: [
-                'src/**/*.js',
-            ],
-            dest: 'dist/angular-token-auth.js',
+            files: [{
+                src: [
+                    '<%= config.files.src %>',
+                ],
+                dest: 'dist/angular-token-auth.js',
+            }],
         },
     };
 
     var uglifyConfig = {
         dist: {
+            options: {
+                screwIE8: false,
+            },
             files: {
                 'dist/angular-token-auth.min.js': 'dist/angular-token-auth.js',
             },
+        },
+    };
+
+    var watchConfig = {
+        lint: {
+            files: ['<%= config.files.lint %>'],
+            tasks: ['lint'],
+        },
+        build: {
+            files: ['<%= config.files.src %>'],
+            tasks: ['build'],
         },
     };
 
@@ -34,8 +50,9 @@ module.exports = function (grunt) {
             lib: 'bower_components',
             modules: 'src',
             files: {
+                src: 'src/**/*.js',
                 lint: [
-                    'src/**/*.js',
+                    '<%= config.files.src %>',
                     '<%= config.files.karmaMocks %>',
                     '<%= config.files.karmaTests %>',
                     './grunt/**/*.js',
@@ -55,6 +72,7 @@ module.exports = function (grunt) {
         },
         concat: concatConfig,
         uglify: uglifyConfig,
+        watch: watchConfig,
     });
 
     // Load external grunt task config.

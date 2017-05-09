@@ -4,7 +4,7 @@
 
 (function () {
 
-    describe('login-redirect.services', function () {
+    describe('auth-login-redirect-token-auth-clear', function () {
 
         beforeEach(function () {
             var self = this;

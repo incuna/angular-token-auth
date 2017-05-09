@@ -1,4 +1,4 @@
-# angular-token-auth
+# angular-token-auth [![Build Status](https://travis-ci.org/incuna/angular-token-auth.svg?branch=master)](https://travis-ci.org/incuna/angular-token-auth) [![codecov](https://codecov.io/gh/incuna/angular-token-auth/branch/master/graph/badge.svg)](https://codecov.io/gh/incuna/angular-token-auth)
 
 ## Installation
 1. `bower install angular-token-auth --save`

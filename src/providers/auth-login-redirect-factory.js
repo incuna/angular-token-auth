@@ -7,20 +7,20 @@
     page when logged out, they will be redirected to the url set in
     TOKEN_AUTH.LOGOUT_REDIRECT_URL, either in the angular-token-auth defaults
     or your own PROJECT_SETTINGS.
-    To use this module, require login-redirect as an app dependency, then
-    require loginRedirect.run and call it in your app's run block.
+    To use this module, require angular-token-auth-login-redirect as an app dependency, then
+    require authLoginRedirect.run and call it in your app's run block.
     Example:
         var app = angular.module('app', [
-            'login-redirect'
+            'angular-token-auth-login-redirect'
         ]);
         module.run([
-            'loginRedirect.run',
+            'authLoginRedirect.run',
             function (loginRedirectRun) {
                 loginRedirectRun();
             }
         ]);
     Or manually add the $routeChangeStart and tokenAuth:clear handlers yourself:
-    simply follow the loginRedirect.run function.
+    simply follow the authLoginRedirect.run function.
     */
 
     var module = angular.module('angular-token-auth-login-redirect', [

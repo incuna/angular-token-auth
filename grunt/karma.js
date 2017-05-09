@@ -14,11 +14,10 @@ module.exports = function (grunt) {
                     '<%= config.lib %>/angular/angular.js',
                     '<%= config.lib %>/angular-mocks/angular-mocks.js',
                     '<%= config.lib %>/angular-route/angular-route.js',
+
                     '<%= config.files.karmaMocks %>',
 
-                    // Init files first, if any, to register modules.
-                    '<%= config.modules %>/**/init.js',
-                    '<%= config.modules %>/**/*.js',
+                    '<%= config.files.src %>',
                     '<%= config.files.karmaTests %>',
                 ],
                 exclude: [],
@@ -32,8 +31,7 @@ module.exports = function (grunt) {
                     'karma-safari-launcher',
                 ],
                 preprocessors: {
-                    '<%= config.files.templatesHTML %>': 'ng-html2js',
-                    '<%= config.files.scripts %>': 'coverage',
+                    '<%= config.files.src %>': 'coverage',
                 },
                 reporters: ['dots', 'coverage'],
                 coverageReporter: {
