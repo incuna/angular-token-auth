@@ -21,7 +21,7 @@ addons:
 sudo: false
 
 before_install:
-    - npm install -g bower grunt-cli codecov
+    - npm install -g bower grunt-cli codecov js-beautify
 
 before_script:
     # Start webserver before other tasks so it has time to boot.
@@ -31,6 +31,13 @@ before_script:
 
 script:
     - grunt travis
+    # Fail if dist has not been compiled:
+    # - compile the dist
+    - grunt build
+    # - programmatically check presence of dist changes: it will exit 1 if found
+    - git diff --stat --exit-code -- dist/
+    # - show beautified minified dist if it's there
+    - git config diff.minjs.textconv js-beautify && git diff --exit-code dist/
 
 after_success:
     # Print coverage in Travis log
