@@ -1,8 +1,5 @@
-/* global jasmine, beforeEach, describe, expect, module, it, inject */
-
-'use strict';
-
 (function () {
+    'use strict';
 
     describe('login-redirect', function () {
 

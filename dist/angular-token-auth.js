@@ -258,7 +258,7 @@
     'use strict';
 
     var module = angular.module('angular-token-auth.auth-login-form-directive-factory', [
-        'angular-token-auth.auth-login-form',
+        'angular-token-auth.auth-login-form-factory',
     ]);
 
     module.factory('authLoginFormDirectiveFactory', [
@@ -282,6 +282,9 @@
 
     var module = angular.module('angular-token-auth.auth-login-form-factory', [
         'ngRoute',
+        'angular-token-auth.auth',
+        'angular-token-auth.auth-actions',
+        'angular-token-auth.auth-module-settings',
     ]);
 
     // extend this in your app using:
@@ -554,7 +557,9 @@
 (function (angular) {
     'use strict';
 
-    var module = angular.module('angular-token-auth.auth-storage', []);
+    var module = angular.module('angular-token-auth.auth-storage', [
+        'angular-token-auth.auth-module-settings',
+    ]);
 
     module.factory('authStorageFactory', ['$window', '$browser', 'authModuleSettings', function ($window, $browser, MODULE_SETTINGS) {
         var cookiePath = MODULE_SETTINGS.COOKIE_PATH ? MODULE_SETTINGS.COOKIE_PATH : $browser.baseHref();

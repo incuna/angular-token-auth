@@ -3,6 +3,9 @@
 
     var module = angular.module('angular-token-auth.auth-login-form-factory', [
         'ngRoute',
+        'angular-token-auth.auth',
+        'angular-token-auth.auth-actions',
+        'angular-token-auth.auth-module-settings',
     ]);
 
     // extend this in your app using:
