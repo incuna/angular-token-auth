@@ -1,4 +1,4 @@
-# Upcoming
+## 6.2.0
 
 * Empty functions `function () {}` replaced by `angular.noop`
 * Fixed comment examples referencing old service names
