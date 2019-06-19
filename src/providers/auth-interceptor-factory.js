@@ -29,9 +29,9 @@
 
                     if (allowedHosts.indexOf(host) > -1 || allowedHosts.indexOf(hostname) > -1) {
                         config.headers = config.headers || {};
-                        var token = authFactory.getToken();
-                        if (token) {
-                            config.headers.Authorization = MODULE_SETTINGS.AUTH_HEADER_PREFIX + ' ' + token;
+                        var authHeader = authFactory.getAuthHeader();
+                        if (authHeader) {
+                            config.headers.Authorization = authHeader;
                         }
                     }
 

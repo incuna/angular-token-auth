@@ -2,6 +2,7 @@
 
 * Empty functions `function () {}` replaced by `angular.noop`
 * Fixed comment examples referencing old service names
+* Store AUTH_HEADER_PREFIX prefix with auth token to facilitate different authentication backends
 
 ## 6.1.0
 
