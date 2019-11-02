@@ -2,7 +2,7 @@
   "name": "angular-token-auth",
   "dependencies": {},
   "devDependencies": {
-    "eslint": "^3.19.0",
+    "eslint": "^6.6.0",
     "eslint-config-incuna": "^1.1.0",
     "eslint-plugin-import": "^2.2.0",
     "grunt": "^1.0.1",
